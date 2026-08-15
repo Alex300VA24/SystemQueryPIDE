@@ -3,10 +3,35 @@
     x-data="{
         navigationOpen: $wire.entangle('navigationOpen').live,
         logoutOpen: false,
+        logoutSubmitting: false,
         sidebarCollapsed: (window.innerWidth > 768 && localStorage.getItem('sidebar_collapsed') === 'true'),
         toggleCollapse() {
             this.sidebarCollapsed = !this.sidebarCollapsed;
             localStorage.setItem('sidebar_collapsed', this.sidebarCollapsed);
+        },
+        openLogout() {
+            if (this.logoutSubmitting) {
+                return;
+            }
+
+            this.logoutOpen = true;
+        },
+        closeLogout() {
+            this.logoutOpen = false;
+            this.logoutSubmitting = false;
+        },
+        submitLogout() {
+            if (this.logoutSubmitting) {
+                return;
+            }
+
+            this.logoutSubmitting = true;
+            this.$nextTick(() => {
+                const form = this.$root.querySelector('[data-logout-form]');
+                if (form) {
+                    form.submit();
+                }
+            });
         },
     }"
     x-init="$watch('navigationOpen', value => document.body.classList.toggle('overflow-y-hidden', value))"
@@ -88,7 +113,7 @@
                     <small class="user-role">{{ auth()->user()->roles->pluck('nombre')->join(', ') ?: 'Sin rol' }}</small>
                 </span>
             </div>
-            <button type="button" class="logout-btn" @click="logoutOpen = true"><x-icon name="logout" /><span class="logout-text">Cerrar Sesión</span></button>
+            <button type="button" class="logout-btn" @click="openLogout()"><x-icon name="logout" /><span class="logout-text">Cerrar Sesión</span></button>
         </div>
     </aside>
 
@@ -136,14 +161,17 @@
         </div>
     </main>
 
-    <div data-ui-modal class="modal-overlay" x-cloak x-show="logoutOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" role="presentation" @click.self="logoutOpen = false">
+    <div data-ui-modal class="modal-overlay" x-cloak x-show="logoutOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" role="presentation" @click.self="closeLogout()">
         <section class="modal-content" role="dialog" aria-modal="true" aria-labelledby="logout-title" x-show="logoutOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 scale-95" x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 scale-100" x-transition:leave-end="opacity-0 translate-y-4 scale-95">
             <div class="modal-symbol danger"><x-icon name="logout" /></div>
             <h2 id="logout-title">¿Cerrar sesión?</h2>
-            <p>Tu sesión actual finalizará y volverás a pantalla de acceso.</p>
+            <p>¿Deseas cerrar la sesión actual?</p>
             <div class="modal-buttons">
-                <button type="button" class="btn-cancel" @click="logoutOpen = false">Cancelar</button>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button type="submit" class="btn-logout">Cerrar sesión</button></form>
+                <button type="button" class="btn-cancel" @click="closeLogout()">Cancelar</button>
+                <form method="POST" action="{{ route('logout') }}" data-logout-form @submit.prevent="submitLogout()">
+                    @csrf
+                    <button type="submit" class="btn-logout" :disabled="logoutSubmitting" x-text="logoutSubmitting ? 'Cerrando...' : 'Cerrar sesión'"></button>
+                </form>
             </div>
         </section>
     </div>

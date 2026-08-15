@@ -63,7 +63,12 @@ class Dashboard extends Component
             return;
         }
 
-        abort_unless(in_array($section, $this->navigationKeys(), true), 404);
+        if (! in_array($section, $this->navigationKeys(), true)) {
+            $this->dispatch('pide-alert', message: 'No tienes acceso a este módulo.', type: 'warning');
+
+            return;
+        }
+
         $this->activeSection = $section;
         session(['dashboard_active_section' => $section]);
         $this->navigationOpen = false;

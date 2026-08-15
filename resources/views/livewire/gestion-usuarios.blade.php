@@ -104,8 +104,8 @@
                             <label for="usuPass">Contraseña @unless($editingId)<span class="required">*</span>@endunless</label>
                             <div class="password-input-wrap">
                                 <input type="{{ $showPassword ? 'text' : 'password' }}" id="usuPass" wire:model="password" maxlength="100" placeholder="{{ $editingId ? 'Dejar vacío para conservar' : 'Contraseña segura' }}" autocomplete="new-password">
-                                <button type="button" class="toggle-password" wire:click="togglePassword" :aria-label="{{ $showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña' }}">
-                                    <i class="fas {{ $showPassword ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                <button type="button" class="toggle-password" wire:click="togglePassword" aria-label="{{ $showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña' }}">
+                                    <i class="fas {{ $showPassword ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                                 </button>
                             </div>
                             @error('password')<span class="field-error" role="alert">{{ $message }}</span>@enderror
@@ -115,8 +115,8 @@
                             <label for="usuPassConfirm">Confirmar Contraseña @unless($editingId)<span class="required">*</span>@endunless</label>
                             <div class="password-input-wrap">
                                 <input type="{{ $showPasswordConfirm ? 'text' : 'password' }}" id="usuPassConfirm" wire:model="password_confirmation" maxlength="100" placeholder="Repita la contraseña" autocomplete="new-password">
-                                <button type="button" class="toggle-password" wire:click="togglePasswordConfirm" :aria-label="{{ $showPasswordConfirm ? 'Ocultar contraseña' : 'Mostrar contraseña' }}">
-                                    <i class="fas {{ $showPasswordConfirm ? 'fa-eye-slash' : 'fa-eye' }}"></i>
+                                <button type="button" class="toggle-password" wire:click="togglePasswordConfirm" aria-label="{{ $showPasswordConfirm ? 'Ocultar contraseña' : 'Mostrar contraseña' }}">
+                                    <i class="fas {{ $showPasswordConfirm ? 'fa-eye' : 'fa-eye-slash' }}"></i>
                                 </button>
                             </div>
                         </div>

@@ -39,6 +39,22 @@ class LivewireDemoTest extends TestCase
             ->assertNoRedirect();
     }
 
+    public function test_dashboard_dispatches_warning_for_forbidden_section(): void
+    {
+        $usuario = Usuario::factory()->create();
+
+        Livewire::actingAs($usuario)
+            ->test(Dashboard::class, ['sections' => [
+                ['key' => 'inicio', 'label' => 'Inicio', 'icon' => 'home', 'children' => []],
+                ['key' => 'usuarios', 'label' => 'Usuarios', 'icon' => 'users', 'children' => []],
+            ]])
+            ->set('activeSection', 'inicio')
+            ->call('selectSection', 'roles')
+            ->assertSet('activeSection', 'inicio')
+            ->assertDispatched('pide-alert', message: 'No tienes acceso a este módulo.', type: 'warning')
+            ->assertNoRedirect();
+    }
+
     public function test_dni_requires_eight_digits(): void
     {
         Livewire::test(ConsultaDni::class)->set('busqueda', '123')->call('search')->assertHasErrors(['busqueda']);
