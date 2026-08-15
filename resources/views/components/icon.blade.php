@@ -1,0 +1,39 @@
+@props(['name'])
+@php
+    $icons = [
+        'home' => 'fa-solid fa-house',
+        'id' => 'fa-solid fa-id-card',
+        'document' => 'fa-solid fa-file-lines',
+        'building' => 'fa-solid fa-building',
+        'car' => 'fa-solid fa-car',
+        'users' => 'fa-solid fa-users',
+        'shield' => 'fa-solid fa-shield-halved',
+        'calculator' => 'fa-solid fa-calculator',
+        'archive' => 'fa-solid fa-box-archive',
+        'key' => 'fa-solid fa-key',
+        'clock' => 'fa-solid fa-clock',
+        'warning' => 'fa-solid fa-triangle-exclamation',
+        'collapse' => 'fa-solid fa-angles-left',
+        'menu' => 'fa-solid fa-bars',
+        'close' => 'fa-solid fa-xmark',
+        'chevron' => 'fa-solid fa-chevron-down',
+        'logout' => 'fa-solid fa-right-from-bracket',
+        'search' => 'fa-solid fa-magnifying-glass',
+        'plus' => 'fa-solid fa-plus',
+        'edit' => 'fa-solid fa-pen-to-square',
+        'trash' => 'fa-solid fa-trash',
+        'check' => 'fa-solid fa-check',
+        'info' => 'fa-solid fa-circle-info',
+        'calendar' => 'fa-solid fa-calendar-days',
+        'camera' => 'fa-solid fa-camera',
+        'user' => 'fa-solid fa-user',
+        'pdf' => 'fa-solid fa-file-pdf',
+        'print' => 'fa-solid fa-print',
+        'eraser' => 'fa-solid fa-eraser',
+        'grid' => 'fa-solid fa-table-cells-large',
+        'question' => 'fa-solid fa-circle-question',
+        'book' => 'fa-solid fa-book-open',
+    ];
+    $iconClass = str_contains((string) $name, 'fa-') ? (string) $name : ($icons[$name] ?? $icons['grid']);
+@endphp
+<i {{ $attributes->class([$iconClass, 'ui-icon'])->merge(['aria-hidden' => 'true']) }}></i>

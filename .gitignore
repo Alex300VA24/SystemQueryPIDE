@@ -1,0 +1,188 @@
+# ============================================================
+# LARAVEL - GITIGNORE MEJORADO
+# Compatible con: XAMPP 8.1, GitHub, cPanel / Hosting compartido
+# ============================================================
+
+# ---------- ENTORNO Y CONFIGURACIÓN SENSIBLE ----------
+.env
+.env.backup
+.env.backup.*
+.env.local
+.env.*.local
+.env.production
+.env.staging
+.env.development
+.env.testing
+.env.dusk
+.env.dusk.local
+auth.json
+
+# ---------- DEPENDENCIAS ----------
+/node_modules
+/vendor
+/bower_components
+/.pnp
+/.pnp.js
+.pnp.cjs
+
+# ---------- CACHÉ Y ARCHIVOS COMPILADOS ----------
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/bootstrap/cache/*.php
+/bootstrap/cache/*.dev
+/bootstrap/cache/*.stub
+/.phpunit.cache
+/.phpunit.result.cache
+.phpunit.result.cache
+
+# ---------- ASSETS DE PAQUETES PUBLICADOS / VENDOR (reinstalar via README / composer) ----------
+/public/assets/css/fontawesome
+/public/assets/css/fontawesome/
+/public/vendor
+/public/vendor/
+/packages
+/packages/
+
+# ---------- LOGS ----------
+/storage/logs/*.log
+/storage/logs/*.txt
+/laravel.log
+*.log
+
+# ---------- STORAGE (Datos generados en runtime) ----------
+/storage/app/*
+!/storage/app/.gitignore
+!/storage/app/public
+/storage/app/public/*
+!/storage/app/public/.gitignore
+
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/framework/testing/*
+!/storage/framework/testing/.gitignore
+
+# ---------- DATABASE ----------
+/database/*.sqlite
+/database/*.sqlite3
+/database/sqlite
+
+# ---------- ARCHIVOS TEMPORALES Y CACHÉ PHP ----------
+*.cache
+*.tmp
+*.swp
+*.swo
+*.~
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ---------- XAMPP / WINDOWS / APACHE ESPECÍFICOS ----------
+.htaccess.bak
+.htaccess~
+httpd.conf.bak
+httpd-vhosts.conf.bak
+error.log
+access.log
+xampp.log
+php_error_log
+php_errors.log
+xdebug.log
+xdebug_profile.*
+xdebug_trace.*
+
+# ---------- CPANEL / HOSTING COMPARTIDO ESPECÍFICOS ----------
+.cpanel
+.cphorde
+.htpasswd
+.ftpquota
+.svn
+error_log
+/cgi-bin
+/awstats
+/_private
+/vault
+cpbackup
+backup-*.tar.gz
+backup-*.zip
+*.bak
+*.old
+*.orig
+
+# ---------- IDEs / EDITORES ----------
+/.idea
+/.fleet
+/.vscode
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.sublime-workspace
+*.sublime-project
+.project
+.settings
+.buildpath
+*.komodoproject
+.komodotools
+*.swp
+*.swo
+*~
+
+# ---------- DEBUG Y PROFILING ----------
+.php_cs.cache
+.php_cs
+.php-cs-fixer.cache
+.php-cs-fixer.php
+.cache
+.phpunit
+.psysh_history
+_ide_helper.php
+_ide_helper_models.php
+.phpstorm.meta.php
+.deploy
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ---------- NPM / PNPM / YARN ----------
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+pnpm-debug.log*
+.pnpm-store
+package-lock.json.bak
+yarn-error.log
+
+# ---------- HASH DEPLOYMENT ----------
+/deploy.php
+/deploy.sh
+/deployer.php
+.envoyer.php
+.envoyer
+/vendor-bin
+.phive
+
+# ---------- HOMESTEAD / VALET / SAIL ----------
+Homestead.json
+Homestead.yaml
+Homestead.json.bak
+Homestead.yaml.bak
+/.vagrant
+Vagrantfile
+
+# ---------- OTROS ----------
+/coverage
+/public/coverage
+/build
+/dist
+/tmp
+/temp

@@ -1,0 +1,52 @@
+* text=auto eol=lf
+
+*.blade.php diff=html
+*.css diff=css
+*.html diff=html
+*.md diff=markdown
+*.php diff=php
+
+*.sh text eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.svg binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+
+/tests export-ignore
+/docs export-ignore
+/.agents export-ignore
+/.impeccable export-ignore
+DESIGN.md export-ignore
+MANUAL_LIVEWIRE.md export-ignore
+PRODUCT.md export-ignore
+README.md export-ignore
+phpunit.xml export-ignore
+/.editorconfig export-ignore
+/.fleet export-ignore
+/.idea export-ignore
+/.vscode export-ignore
+tailwind.config.js export-ignore
+postcss.config.js export-ignore
+vite.config.js export-ignore
+package.json export-ignore
+package-lock.json export-ignore
+pnpm-lock.yaml export-ignore
+pnpm-workspace.yaml export-ignore
+skills-lock.json export-ignore
+/.github export-ignore
+CHANGELOG.md export-ignore
+.styleci.yml export-ignore
+Homestead.json export-ignore
+Homestead.yaml export-ignore
+Vagrantfile export-ignore
+sail export-ignore
