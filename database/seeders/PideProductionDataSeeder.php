@@ -23,7 +23,7 @@ class PideProductionDataSeeder extends Seeder
         $usuarioRol = $this->load("$dir/usuario_rol.json");
         $historial = $this->load("$dir/historial_auditoria.json");
 
-        DB::table('cat_estado')->insert(array_map(fn ($r) => [
+        $this->insertWithId('cat_estado', array_map(fn ($r) => [
             'id' => $r['EST_id'],
             'codigo' => $r['EST_codigo'],
             'descripcion' => $r['EST_descripcion'],
@@ -32,7 +32,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => $this->dt($r['EST_fecha_registro']),
         ], $catEstado));
 
-        DB::table('tipo_documento')->insert(array_map(fn ($r) => [
+        $this->insertWithId('tipo_documento', array_map(fn ($r) => [
             'id' => $r['TDO_id'],
             'codigo' => $r['TDO_codigo'],
             'nombre' => $r['TDO_nombre'],
@@ -45,7 +45,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => now(),
         ], $tipoDocumento));
 
-        DB::table('sistemas')->insert(array_map(fn ($r) => [
+        $this->insertWithId('sistemas', array_map(fn ($r) => [
             'id' => $r['SIS_id'],
             'codigo' => $r['SIS_codigo'],
             'nombre' => $r['SIS_nombre'],
@@ -59,7 +59,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => now(),
         ], $sistemas));
 
-        DB::table('iconos')->insert(array_map(fn ($r) => [
+        $this->insertWithId('iconos', array_map(fn ($r) => [
             'id' => $r['ICO_id'],
             'clase' => $r['ICO_clase'],
             'nombre' => $r['ICO_nombre'],
@@ -70,7 +70,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => now(),
         ], $iconos));
 
-        DB::table('personas')->insert(array_map(fn ($r) => [
+        $this->insertWithId('personas', array_map(fn ($r) => [
             'id' => $r['PER_id'],
             'tipo_persona' => $r['PER_tipo_persona'] ?: 1,
             'documento_tipo_id' => $r['PER_documento_tipo_id'],
@@ -93,7 +93,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => $this->dt($r['PER_fecha_actualizacion']),
         ], $personas));
 
-        DB::table('roles')->insert(array_map(fn ($r) => [
+        $this->insertWithId('roles', array_map(fn ($r) => [
             'id' => $r['ROL_id'],
             'codigo' => $r['ROL_codigo'],
             'nombre' => $r['ROL_nombre'],
@@ -104,7 +104,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => now(),
         ], $roles));
 
-        DB::table('usuarios')->insert(array_map(fn ($r) => [
+        $this->insertWithId('usuarios', array_map(fn ($r) => [
             'id' => $r['USU_id'],
             'persona_id' => $r['USU_persona_id'],
             'username' => $r['USU_username'],
@@ -121,7 +121,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => $this->dt($r['USU_fecha_registro']),
         ], $usuarios));
 
-        DB::table('modulos')->insert(array_map(fn ($r) => [
+        $this->insertWithId('modulos', array_map(fn ($r) => [
             'id' => $r['MOD_id'],
             'sistema_id' => $r['MOD_sistema_id'],
             'padre_id' => $r['MOD_padre_id'] ?: null,
@@ -138,7 +138,7 @@ class PideProductionDataSeeder extends Seeder
             'updated_at' => now(),
         ], $modulos));
 
-        DB::table('rol_modulo')->insert(array_map(fn ($r) => [
+        $this->insertWithId('rol_modulo', array_map(fn ($r) => [
             'id' => $r['ROM_id'],
             'rol_id' => $r['ROM_rol_id'],
             'sistema_id' => $r['ROM_sistema_id'],
@@ -146,7 +146,7 @@ class PideProductionDataSeeder extends Seeder
             'fecha_asignacion' => $this->dt($r['ROM_fecha_asignacion']),
         ], $rolModulo));
 
-        DB::table('usuario_rol')->insert(array_map(fn ($r) => [
+        $this->insertWithId('usuario_rol', array_map(fn ($r) => [
             'id' => $r['USR_id'] + 1,
             'usuario_id' => $r['USR_usuario_id'],
             'rol_id' => $r['USR_rol_id'],
@@ -156,7 +156,7 @@ class PideProductionDataSeeder extends Seeder
             'activo' => (bool) $r['USR_activo'],
         ], $usuarioRol));
 
-        DB::table('historial_auditoria')->insert(array_map(fn ($r) => [
+        $this->insertWithId('historial_auditoria', array_map(fn ($r) => [
             'id' => $r['HIS_id'] + 1,
             'tabla' => $r['HIS_tabla'],
             'registro_id' => $r['HIS_registro_id'],
@@ -173,6 +173,21 @@ class PideProductionDataSeeder extends Seeder
     private function load(string $path): array
     {
         return json_decode(file_get_contents($path), true);
+    }
+
+    private function insertWithId(string $table, array $rows): void
+    {
+        $sqlsrv = DB::connection()->getDriverName() === 'sqlsrv';
+
+        if ($sqlsrv) {
+            DB::statement("SET IDENTITY_INSERT [$table] ON");
+        }
+
+        DB::table($table)->insert($rows);
+
+        if ($sqlsrv) {
+            DB::statement("SET IDENTITY_INSERT [$table] OFF");
+        }
     }
 
     private function dt(?string $value): ?string
