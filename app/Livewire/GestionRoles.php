@@ -160,7 +160,7 @@ final class GestionRoles extends Component
     private function moduleGroups(): array
     {
         return Modulo::query()
-            ->with(['children' => fn ($query) => $query->where('activo', true)->orderBy('orden')->orderBy('id')])
+            ->with(['children' => fn ($query) => $query->where('activo', true)->orderBy('id')])
             ->whereNull('padre_id')
             ->where('activo', true)
             ->orderBy('orden')
