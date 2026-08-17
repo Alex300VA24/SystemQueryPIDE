@@ -180,13 +180,13 @@ class PideProductionDataSeeder extends Seeder
         $sqlsrv = DB::connection()->getDriverName() === 'sqlsrv';
 
         if ($sqlsrv) {
-            DB::statement("SET IDENTITY_INSERT [$table] ON");
+            DB::unprepared("SET IDENTITY_INSERT [$table] ON");
         }
 
         DB::table($table)->insert($rows);
 
         if ($sqlsrv) {
-            DB::statement("SET IDENTITY_INSERT [$table] OFF");
+            DB::unprepared("SET IDENTITY_INSERT [$table] OFF");
         }
     }
 
