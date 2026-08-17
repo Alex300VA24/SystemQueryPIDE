@@ -118,4 +118,26 @@ class SyncedPideasswordChangeTest extends TestCase
         $this->assertTrue(Hash::check('NuevaClave#26', $usuario->fresh()->password_hash));
         $this->assertFalse(app(PideCredentialStore::class)->has());
     }
+
+    public function test_user_with_only_sunat_access_does_not_sync_against_reniec(): void
+    {
+        $this->seed(PideProductionDataSeeder::class);
+        $usuario = Usuario::factory()->create();
+        $usuario->roles()->attach(Rol::where('codigo', 'PRAC')->value('id'), ['fecha_asignacion' => now(), 'activo' => true]);
+        $this->actingAs($usuario);
+
+        $service = \Mockery::mock(ReniecServiceInterface::class);
+        $service->shouldNotReceive('actualizarPasswordRENIEC');
+        $this->app->instance(ReniecServiceInterface::class, $service);
+
+        Livewire::test(ActualizarPassword::class)
+            ->set('currentPassword', 'password')
+            ->set('password', 'NuevaClave#26')
+            ->set('password_confirmation', 'NuevaClave#26')
+            ->call('update')
+            ->assertHasNoErrors();
+
+        $this->assertTrue(Hash::check('NuevaClave#26', $usuario->fresh()->password_hash));
+        $this->assertFalse(app(PideCredentialStore::class)->has());
+    }
 }

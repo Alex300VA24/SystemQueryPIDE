@@ -21,13 +21,15 @@ use Illuminate\Validation\ValidationException;
  * el sistema local con una contraseña que el operador ya no podría usar
  * para autenticarse ante RENIEC.
  *
- * Los módulos DNI/RUC/PAR (ver Usuario::tieneAccesoModulo) son la misma
- * señal usada al iniciar sesión para decidir si un usuario tiene acceso a
- * PIDE (ver App\Auth\PendingCuiAuthentication).
+ * Solo DNI (RENIEC) y PAR (SUNARP, que internamente consulta RENIEC) usan
+ * credencial personal ante RENIEC. RUC (SUNAT) consulta con URL fija de
+ * config, sin credencial de usuario, así que no dispara este sync: forzarlo
+ * rompía a usuarios con convenio solo en SUNAT ("Usuario no registrado en
+ * ningún convenio" al cambiar password).
  */
 class ChangeUserPasswordService
 {
-    private const PIDE_MODULE_CODES = ['DNI', 'RUC', 'PAR'];
+    private const PIDE_MODULE_CODES = ['DNI', 'PAR'];
 
     public function __construct(
         private readonly ReniecServiceInterface $reniecService,
