@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('personas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('documento_tipo_id')->constrained('tipo_documento')->restrictOnDelete();
+            $table->foreignId('documento_tipo_id')->constrained('tipo_documento');
             $table->string('documento_numero', 20);
             $table->string('apellido_paterno', 100);
             $table->string('apellido_materno', 100)->nullable();
@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('via_mz', 10)->nullable();
             $table->string('via_lote', 10)->nullable();
             $table->string('foto_url', 255)->nullable();
-            $table->foreignId('estado_id')->constrained('cat_estado')->restrictOnDelete();
+            $table->foreignId('estado_id')->constrained('cat_estado');
             $table->timestamps();
 
             $table->unique(['documento_tipo_id', 'documento_numero']);

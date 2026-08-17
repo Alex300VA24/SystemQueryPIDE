@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Rol extends Model
 {
@@ -11,6 +12,14 @@ class Rol extends Model
     protected $fillable = ['codigo', 'nombre', 'descripcion', 'nivel', 'activo'];
 
     protected $casts = ['activo' => 'boolean'];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Rol $rol) {
+            DB::table('usuario_rol')->where('rol_id', $rol->id)->delete();
+            DB::table('rol_modulo')->where('rol_id', $rol->id)->delete();
+        });
+    }
 
     public function usuarios()
     {

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('sesion_usuario', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('usuario_id')->constrained('usuarios')->cascadeOnDelete();
+            $table->foreignId('usuario_id')->constrained('usuarios');
             $table->string('token', 255)->unique();
             $table->string('ip', 45)->nullable();
             $table->text('user_agent')->nullable();

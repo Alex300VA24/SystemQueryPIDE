@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Modulo extends Model
 {
@@ -25,6 +26,15 @@ class Modulo extends Model
     ];
 
     protected $casts = ['es_menu' => 'boolean', 'activo' => 'boolean'];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Modulo $modulo) {
+            $modulo->children()->update(['padre_id' => null]);
+
+            DB::table('rol_modulo')->where('modulo_id', $modulo->id)->delete();
+        });
+    }
 
     public function sistema()
     {

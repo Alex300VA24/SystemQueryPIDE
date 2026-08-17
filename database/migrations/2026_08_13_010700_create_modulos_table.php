@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('modulos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('sistema_id')->constrained('sistemas')->cascadeOnDelete();
-            $table->foreignId('padre_id')->nullable()->constrained('modulos')->nullOnDelete();
+            $table->foreignId('sistema_id')->constrained('sistemas');
+            $table->foreignId('padre_id')->nullable()->constrained('modulos');
             $table->string('codigo', 50);
             $table->string('nombre', 100);
             $table->text('descripcion')->nullable();

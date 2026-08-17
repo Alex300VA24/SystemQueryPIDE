@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Authenticatable
@@ -26,6 +27,17 @@ class Usuario extends Authenticatable
         'fecha_ultimo_acceso' => 'datetime',
         'fecha_actualizacion_password' => 'datetime',
     ];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Usuario $usuario) {
+            $usuario->sesiones()->each(fn (SesionUsuario $sesion) => $sesion->delete());
+
+            DB::table('usuario_rol')->where('usuario_id', $usuario->id)->delete();
+            DB::table('usuario_rol')->where('asignado_por', $usuario->id)->update(['asignado_por' => null]);
+            DB::table('historial_auditoria')->where('usuario_id', $usuario->id)->update(['usuario_id' => null]);
+        });
+    }
 
     public function getAuthPassword()
     {

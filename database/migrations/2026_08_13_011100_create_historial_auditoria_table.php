@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('tabla', 50);
             $table->unsignedBigInteger('registro_id');
             $table->string('operacion', 10);
-            $table->foreignId('usuario_id')->nullable()->constrained('usuarios')->nullOnDelete();
+            $table->foreignId('usuario_id')->nullable()->constrained('usuarios');
             $table->timestamp('fecha')->useCurrent();
             $table->string('ip', 45)->nullable();
             $table->json('datos_anteriores')->nullable();
