@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\Concerns\DocumentoNumeroRule;
+use App\Http\Requests\Concerns\PasswordPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -35,7 +36,7 @@ class UsuarioRequest extends FormRequest
             'sexo' => ['required', Rule::in(['M', 'F'])],
             'username' => ['required', 'string', 'min:3', 'max:15', Rule::unique('usuarios', 'username')->ignore($usuarioId)],
             'email' => ['nullable', 'email:rfc', 'max:50', Rule::unique('usuarios', 'email')->ignore($usuarioId)],
-            'password' => [$usuarioId ? 'nullable' : 'required', 'string', 'min:6', 'confirmed'],
+            'password' => [$usuarioId ? 'nullable' : 'required', ...PasswordPolicy::rules(), 'confirmed'],
             'roleId' => ['required', 'integer', 'exists:roles,id'],
             'estadoId' => ['required', 'integer', 'exists:cat_estado,id'],
             'cui' => ['required', 'numeric', 'digits:1'],
@@ -78,6 +79,9 @@ class UsuarioRequest extends FormRequest
             'email.unique' => 'Este correo ya está registrado.',
             'password.required' => 'Ingrese la contraseña.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'password.mixed' => 'La contraseña debe incluir mayúsculas y minúsculas.',
+            'password.numbers' => 'La contraseña debe incluir al menos un número.',
+            'password.symbols' => 'La contraseña debe incluir al menos un símbolo.',
             'password.confirmed' => 'La confirmación de contraseña no coincide.',
             'roleId.required' => 'Seleccione un rol.',
             'roleId.exists' => 'El rol seleccionado no es válido.',

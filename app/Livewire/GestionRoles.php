@@ -13,6 +13,11 @@ final class GestionRoles extends Component
 {
     use WithPagination;
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->tieneAccesoModuloId(Modulo::ID_ROLES), 403);
+    }
+
     public string $activeTab = 'create';
 
     public string $search = '';

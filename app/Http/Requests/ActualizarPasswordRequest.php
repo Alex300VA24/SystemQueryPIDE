@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\PasswordPolicy;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ActualizarPasswordRequest extends FormRequest
@@ -20,7 +21,7 @@ class ActualizarPasswordRequest extends FormRequest
     {
         return [
             'currentPassword' => ['required', 'current_password'],
-            'password' => ['required', 'string', 'min:6', 'confirmed', 'different:currentPassword'],
+            'password' => ['required', ...PasswordPolicy::rules(), 'confirmed', 'different:currentPassword'],
         ];
     }
 
@@ -36,6 +37,9 @@ class ActualizarPasswordRequest extends FormRequest
             'currentPassword.current_password' => 'La contraseña actual no es correcta.',
             'password.required' => 'Ingrese la nueva contraseña.',
             'password.min' => 'La nueva contraseña debe tener al menos :min caracteres.',
+            'password.mixed' => 'La nueva contraseña debe incluir mayúsculas y minúsculas.',
+            'password.numbers' => 'La nueva contraseña debe incluir al menos un número.',
+            'password.symbols' => 'La nueva contraseña debe incluir al menos un símbolo.',
             'password.confirmed' => 'La confirmación de la nueva contraseña no coincide.',
             'password.different' => 'La nueva contraseña debe ser diferente a la actual.',
         ];

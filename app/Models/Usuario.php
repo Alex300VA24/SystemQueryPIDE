@@ -58,6 +58,28 @@ class Usuario extends Authenticatable
         return $this->hasMany(SesionUsuario::class, 'usuario_id');
     }
 
+    /**
+     * Indica si el usuario tiene, mediante alguno de sus roles activos,
+     * acceso al módulo indicado (por código, p. ej. "DNI", "RUC", "PAR").
+     */
+    public function tieneAccesoModulo(string $codigo): bool
+    {
+        return $this->rolesActivos()
+            ->whereHas('modulos', fn ($query) => $query->where('modulos.codigo', $codigo))
+            ->exists();
+    }
+
+    /**
+     * Igual que tieneAccesoModulo(), pero por ID de módulo (estable aunque
+     * el admin renombre el código desde Gestión de Módulos).
+     */
+    public function tieneAccesoModuloId(int $moduloId): bool
+    {
+        return $this->rolesActivos()
+            ->whereHas('modulos', fn ($query) => $query->where('modulos.id', $moduloId))
+            ->exists();
+    }
+
     public function isActivo(): bool
     {
         return (int) $this->estado_id === CatEstado::ACTIVO;

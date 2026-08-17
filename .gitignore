@@ -186,3 +186,9 @@ Vagrantfile
 /dist
 /tmp
 /temp
+
+.agents/
+.impeccable/
+DESIGN.md
+MANUAL_LIVEWIRE.md
+

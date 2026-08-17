@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Services\Pide\Contracts\ReniecServiceInterface;
+use App\Services\Pide\PideCredentialStore;
 
 class ConsultaDni extends BaseConsultation
 {
@@ -20,7 +21,8 @@ class ConsultaDni extends BaseConsultation
 
     protected function attemptReal(): ?array
     {
-        $resultado = app(ReniecServiceInterface::class)->consultarDNI($this->busqueda, $this->dniUsuario, $this->pidePassword);
+        $passwordPide = app(PideCredentialStore::class)->get() ?? '';
+        $resultado = app(ReniecServiceInterface::class)->consultarDNI($this->busqueda, $this->dniUsuario, $passwordPide);
 
         if (! $resultado['success'] || empty($resultado['data'])) {
             $this->errorMessage = $resultado['message'] ?? 'RENIEC no devolvió resultados.';

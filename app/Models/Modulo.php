@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Modulo extends Model
 {
+    /**
+     * IDs fijos de módulos de sistema (no cambian aunque el admin edite
+     * el código/nombre desde Gestión de Módulos). Usados para gating
+     * de acceso donde el código no debe romperse al renombrarlo.
+     */
+    public const ID_USUARIOS = 8;
+
+    public const ID_ROLES = 10;
+
+    public const ID_MODULOS = 11;
+
     protected $table = 'modulos';
 
     protected $fillable = [

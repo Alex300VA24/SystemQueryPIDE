@@ -30,7 +30,8 @@ new #[Layout('layouts.guest')] class extends Component
             return;
         }
 
-        app(PendingCuiAuthentication::class)->start($usuarioId, $this->form->remember);
+        app(PendingCuiAuthentication::class)->start($usuarioId, $this->form->remember, $this->form->password);
+        $this->form->reset('password');
         $this->dispatch('open-validar-cui-modal')->to(ValidarCuiModal::class);
     }
 }; ?>

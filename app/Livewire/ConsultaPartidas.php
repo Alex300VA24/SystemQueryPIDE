@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Requests\ConsultaPartidasRequest;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
+use App\Services\Pide\PideCredentialStore;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Throwable;
@@ -41,14 +42,11 @@ class ConsultaPartidas extends BaseConsultation
     public function mount(): void
     {
         $this->dniUsuario = (string) (auth()->user()?->persona?->documento_numero ?? '');
-        $this->pidePassword = (string) session('pide_password', '');
     }
 
     #[On('pide-credential-saved')]
-    public function onPideCredentialSaved(string $pidePassword): void
+    public function onPideCredentialSaved(): void
     {
-        $this->pidePassword = $pidePassword;
-
         if ($this->tab === 'natural') {
             $this->searchNatural();
         }
@@ -85,7 +83,9 @@ class ConsultaPartidas extends BaseConsultation
             ConsultaPartidasRequest::validationAttributes(),
         );
 
-        if (trim($this->pidePassword) === '') {
+        $passwordPide = app(PideCredentialStore::class)->get();
+
+        if ($passwordPide === null) {
             $this->dispatch('open-pide-credential-modal');
 
             return;
@@ -94,7 +94,7 @@ class ConsultaPartidas extends BaseConsultation
         $this->runPersonSearch(fn (SunarpServiceInterface $service) => $service->buscarPersonaNatural(
             $this->naturalDni,
             $this->dniUsuario,
-            $this->pidePassword,
+            $passwordPide,
         ), 'RENIEC');
     }
 
@@ -233,8 +233,7 @@ class ConsultaPartidas extends BaseConsultation
                 $this->setStatus($message, 'warning');
 
                 if (($response['error_type'] ?? null) === 'credential_expired') {
-                    session()->forget('pide_password');
-                    $this->pidePassword = '';
+                    app(PideCredentialStore::class)->forget();
                     $this->dispatch('open-pide-password-modal', dniUsuario: $this->dniUsuario, message: $message);
                 }
 

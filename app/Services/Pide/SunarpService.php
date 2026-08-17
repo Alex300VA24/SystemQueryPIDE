@@ -6,6 +6,7 @@ use App\Services\Pide\Contracts\PideHttpClientInterface;
 use App\Services\Pide\Contracts\ReniecServiceInterface;
 use App\Services\Pide\Contracts\SunatServiceInterface;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Servicio de consultas SUNARP.
@@ -54,16 +55,13 @@ class SunarpService implements SunarpServiceInterface
      */
     public function buscarPersonaNatural(string $dni, string $dniUsuario, string $passwordPIDE): array
     {
-        error_log("=== INICIO BÚSQUEDA PERSONA NATURAL (RENIEC) ===");
-        error_log("DNI: $dni");
-
         $datosReniec = $this->reniecService->obtenerDatosRENIEC($dni, $dniUsuario, $passwordPIDE);
 
-        if (!$datosReniec['success']) {
-            error_log("Error RENIEC: " . $datosReniec['message']);
-        } else {
-            error_log("Datos RENIEC obtenidos correctamente");
-        }
+        Log::info('Búsqueda persona natural (RENIEC)', [
+            'service' => 'RENIEC',
+            'user_id' => auth()->id(),
+            'success' => $datosReniec['success'],
+        ]);
 
         return $datosReniec;
     }
@@ -75,21 +73,22 @@ class SunarpService implements SunarpServiceInterface
     {
         $tipoBusqueda = $input['tipoBusqueda'] ?? 'ruc';
 
-        error_log("=== INICIO BÚSQUEDA PERSONA JURÍDICA (SUNAT) ===");
-        error_log("Tipo de búsqueda: $tipoBusqueda");
-
         if ($tipoBusqueda === 'ruc') {
             if (!isset($input['ruc'])) {
                 return ['success' => false, 'message' => 'RUC no proporcionado'];
             }
 
             $ruc = trim($input['ruc']);
-            error_log("Buscando por RUC: $ruc");
 
             $datosSunat = $this->sunatService->consultarRUC($ruc);
 
+            Log::info('Búsqueda persona jurídica por RUC (SUNAT)', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'success' => $datosSunat['success'],
+            ]);
+
             if (!$datosSunat['success']) {
-                error_log("Error SUNAT: " . $datosSunat['message']);
                 return $datosSunat;
             }
 
@@ -113,15 +112,13 @@ class SunarpService implements SunarpServiceInterface
             // Filtrar caracteres peligrosos
             $razonSocial = preg_replace('/[^A-Za-z0-9\s\.\-]/', '', $razonSocial);
 
-            error_log("Buscando por razón social: $razonSocial");
-
             $resultadosSunat = $this->sunatService->buscarPorRazonSocial($razonSocial);
 
-            if (!$resultadosSunat['success']) {
-                error_log("Error SUNAT: " . $resultadosSunat['message']);
-            } else {
-                error_log("Encontrados " . count($resultadosSunat['data']) . " resultados en SUNAT");
-            }
+            Log::info('Búsqueda persona jurídica por razón social (SUNAT)', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'success' => $resultadosSunat['success'],
+            ]);
 
             return $resultadosSunat;
         } else {
@@ -137,9 +134,6 @@ class SunarpService implements SunarpServiceInterface
      */
     public function consultarTSIRSARPNatural(string $apellidoPaterno, string $apellidoMaterno, string $nombres): array
     {
-        error_log("=== CONSULTA TSIRSARP PERSONA NATURAL ===");
-        error_log("Nombres: $nombres $apellidoPaterno $apellidoMaterno");
-
         return $this->ejecutarTSIRSARP(
             $this->nombreUsuario,
             $this->passUsuario,
@@ -156,9 +150,6 @@ class SunarpService implements SunarpServiceInterface
      */
     public function consultarTSIRSARPJuridica(string $razonSocial): array
     {
-        error_log("=== CONSULTA TSIRSARP PERSONA JURÍDICA ===");
-        error_log("Razón Social: $razonSocial");
-
         return $this->ejecutarTSIRSARP(
             $this->nombreUsuario,
             $this->passUsuario,
@@ -175,7 +166,6 @@ class SunarpService implements SunarpServiceInterface
      */
     public function consultarGOficina(): array
     {
-        error_log("=== CONSULTA GOficina ===");
         return $this->ejecutarGOficina($this->nombreUsuario, $this->passUsuario);
     }
 
@@ -188,9 +178,6 @@ class SunarpService implements SunarpServiceInterface
         $clave = $this->passUsuario;
         $registro = '21000';
 
-        error_log("=== CONSULTA LASIRSARP POR PARTIDA ===");
-        error_log("Zona: $zona, Oficina: $oficina, Partida: $partida");
-
         // 1. CONSULTA LASIRSARP (Asientos)
         $resultLASIRSARP = $this->ejecutarLASIRSARP($usuario, $clave, $zona, $oficina, $partida, $registro);
 
@@ -198,11 +185,8 @@ class SunarpService implements SunarpServiceInterface
             return $resultLASIRSARP;
         }
 
-        error_log("Este es el resultLASIRSARP: " . print_r($resultLASIRSARP, true));
-
         // VALIDAR SI HAY ASIENTOS
         if (empty($resultLASIRSARP['data']) || !is_array($resultLASIRSARP['data'])) {
-            error_log("No se encontraron asientos para la partida");
             return [
                 'success' => false,
                 'message' => 'No se encontraron asientos registrales para la partida consultada'
@@ -216,11 +200,6 @@ class SunarpService implements SunarpServiceInterface
         // 2. CONSULTA VASIRSARP (Imágenes)
         $imagenes = $this->obtenerImagenesVASIRSARP($usuario, $clave, $transaccion, $resultLASIRSARP);
         $item['imagenes'] = $imagenes;
-
-        // 3. PREPARAR RESPUESTA FINAL
-        error_log("=== RESPONSE FINAL ===");
-        error_log("Tiene asientos: SÍ (" . count($item['asientos']) . ")");
-        error_log("Tiene imágenes: " . (count($imagenes) > 0 ? 'SÍ (' . count($imagenes) . ')' : 'NO'));
 
         return [
             'success' => true,
@@ -238,9 +217,6 @@ class SunarpService implements SunarpServiceInterface
         $clave = $this->passUsuario;
         $registroCodigo = '21000';
 
-        error_log("=== CARGANDO DETALLE DE PARTIDA ===");
-        error_log("Partida: $numeroPartida, Zona: $codigoZona, Oficina: $codigoOficina");
-
         try {
             $detalle = [
                 'asientos' => [],
@@ -250,8 +226,6 @@ class SunarpService implements SunarpServiceInterface
 
             // 1. CONSULTA LASIRSARP (Asientos y Fichas)
             if (!empty($numeroPartida) && !empty($codigoZona) && !empty($codigoOficina)) {
-                error_log("Ejecutando LASIRSARP...");
-
                 $resultLASIRSARP = $this->ejecutarLASIRSARP(
                     $usuario, $clave, $codigoZona, $codigoOficina, $numeroPartida, $registroCodigo
                 );
@@ -259,16 +233,11 @@ class SunarpService implements SunarpServiceInterface
                 if ($resultLASIRSARP['success']) {
                     $detalle['asientos'] = $resultLASIRSARP['data'];
 
-                    $totalElementos = count($detalle['asientos']);
-                    error_log("LASIRSARP exitoso - Total elementos (asientos + fichas): $totalElementos");
-
                     // 2. CONSULTA VASIRSARP (Imágenes)
                     $transaccion = $resultLASIRSARP['transaccion'] ?? '';
                     $detalle['imagenes'] = $this->obtenerImagenesDetalleVASIRSARP(
                         $usuario, $clave, $transaccion, $resultLASIRSARP
                     );
-                } else {
-                    error_log("LASIRSARP falló: " . $resultLASIRSARP['message']);
                 }
             }
 
@@ -279,28 +248,14 @@ class SunarpService implements SunarpServiceInterface
                 !empty($codigoZona) &&
                 !empty($codigoOficina)
             ) {
-                error_log("=== EJECUTANDO VDRPVExtra ===");
-                error_log("Placa: $numeroPlaca");
-
                 $resultVDRPVExtra = $this->ejecutarVDRPVExtra(
                     $usuario, $clave, $codigoZona, $codigoOficina, $numeroPlaca
                 );
 
                 if ($resultVDRPVExtra['success'] && !empty($resultVDRPVExtra['data'])) {
                     $detalle['datos_vehiculo'] = $resultVDRPVExtra['data'];
-                    error_log("✓ Datos del vehículo obtenidos");
-                } else {
-                    error_log("✗ No se obtuvieron datos del vehículo");
                 }
-            } else {
-                error_log("No se ejecutó VDRPVExtra - Placa: " . ($numeroPlaca ?: 'N/A'));
             }
-
-            // 4. LOG FINAL
-            error_log("=== RESPUESTA FINAL ===");
-            error_log("Total asientos/fichas: " . count($detalle['asientos']));
-            error_log("Total imágenes: " . count($detalle['imagenes']));
-            error_log("Tiene datos vehículo: " . (!empty($detalle['datos_vehiculo']) ? 'SÍ' : 'NO'));
 
             return [
                 'success' => true,
@@ -308,8 +263,12 @@ class SunarpService implements SunarpServiceInterface
                 'data' => $detalle
             ];
         } catch (\Exception $e) {
-            error_log("Exception en cargarDetallePartida: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
+            Log::error('Excepción al cargar detalle de partida SUNARP', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return [
                 'success' => false,
                 'message' => 'Error al cargar detalle: ' . $e->getMessage(),
@@ -339,8 +298,6 @@ class SunarpService implements SunarpServiceInterface
                 ]
             ];
 
-            error_log("TSIRSARP Request: " . json_encode($data, JSON_UNESCAPED_UNICODE));
-
             $curlResult = $this->httpClient->execute($url, $data, 'POST', 'SUNARP (TSIRSARP)');
 
             if (!$curlResult['success']) {
@@ -349,12 +306,14 @@ class SunarpService implements SunarpServiceInterface
 
             $jsonResponse = json_decode($curlResult['response'], true);
 
-            error_log("TSIRSARP Response Code: " . $curlResult['httpCode']);
-            error_log("TSIRSARP Response: " . $curlResult['response']);
+            Log::info('Consulta TSIRSARP (SUNARP)', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'http_code' => $curlResult['httpCode'],
+            ]);
 
             if ($curlResult['httpCode'] == 200) {
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    error_log("Error JSON TSIRSARP: " . json_last_error_msg());
                     return ['success' => false, 'message' => 'Error al decodificar respuesta de SUNARP', 'data' => []];
                 }
 
@@ -367,7 +326,12 @@ class SunarpService implements SunarpServiceInterface
                 ];
             }
         } catch (\Exception $e) {
-            error_log("Exception en consultarTSIRSARP: " . $e->getMessage());
+            Log::error('Excepción al consultar TSIRSARP', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return ['success' => false, 'message' => 'Error al consultar SUNARP: ' . $e->getMessage(), 'data' => []];
         }
     }
@@ -375,8 +339,6 @@ class SunarpService implements SunarpServiceInterface
     private function procesarRespuestaTSIRSARP(array $jsonResponse, string $tipoParticipante): array
     {
         try {
-            error_log("Procesando respuesta TSIRSARP. Tipo: $tipoParticipante");
-
             if (
                 !isset($jsonResponse['buscarTitularidadSIRSARPResponse']) ||
                 !isset($jsonResponse['buscarTitularidadSIRSARPResponse']['respuestaTitularidad'])
@@ -401,11 +363,7 @@ class SunarpService implements SunarpServiceInterface
                 $catalogoOficinas = $resultGOficina['data'];
             }
 
-            error_log("Total de registros a procesar: " . count($registros));
-
             foreach ($registros as $index => $registro) {
-                error_log("=== Procesando registro " . ($index + 1) . "/" . count($registros) . " ===");
-
                 $item = [
                     'libro' => $registro['libro'] ?? '',
                     'apPaterno' => $registro['apPaterno'] ?? '',
@@ -437,7 +395,6 @@ class SunarpService implements SunarpServiceInterface
                     if (isset($catalogoOficinas[$oficinaKey])) {
                         $codigoZona = $catalogoOficinas[$oficinaKey]['codZona'];
                         $codigoOficina = $catalogoOficinas[$oficinaKey]['codOficina'];
-                        error_log("Oficina mapeada: $oficinaKey -> Zona: $codigoZona, Oficina: $codigoOficina");
                     }
                 }
 
@@ -446,9 +403,6 @@ class SunarpService implements SunarpServiceInterface
 
                 $resultados[] = $item;
             }
-
-            error_log("=== RESPONSE INICIAL (sin detalles) ===");
-            error_log("Total partidas: " . count($resultados));
 
             if (empty($resultados)) {
                 return ['success' => false, 'message' => 'No se encontraron registros válidos en SUNARP', 'data' => []];
@@ -462,8 +416,12 @@ class SunarpService implements SunarpServiceInterface
                 'requiere_carga_bajo_demanda' => true
             ];
         } catch (\Exception $e) {
-            error_log("Exception en procesarRespuestaTSIRSARP: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
+            Log::error('Excepción al procesar respuesta TSIRSARP', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return [
                 'success' => false,
                 'message' => 'Error al procesar respuesta de SUNARP: ' . $e->getMessage(),
@@ -484,15 +442,11 @@ class SunarpService implements SunarpServiceInterface
                 ]
             ];
 
-            error_log("GOficina Request: " . json_encode($data, JSON_UNESCAPED_UNICODE));
-
             $curlResult = $this->httpClient->execute($url, $data, 'POST', 'SUNARP (GOficina)');
 
             if (!$curlResult['success']) {
                 return ['success' => false, 'message' => $curlResult['error'], 'data' => []];
             }
-
-            error_log("GOficina Response Code: " . $curlResult['httpCode']);
 
             if ($curlResult['httpCode'] == 200) {
                 $jsonResult = $this->httpClient->decodeJsonResponse($curlResult['response'], 'SUNARP (GOficina)');
@@ -518,8 +472,6 @@ class SunarpService implements SunarpServiceInterface
                     ];
                 }
 
-                error_log("GOficina: " . count($catalogo) . " oficinas cargadas");
-
                 return [
                     'success' => true,
                     'message' => 'Catálogo de oficinas obtenido',
@@ -530,7 +482,12 @@ class SunarpService implements SunarpServiceInterface
 
             return ['success' => false, 'message' => "HTTP {$curlResult['httpCode']}", 'data' => []];
         } catch (\Exception $e) {
-            error_log("Exception en ejecutarGOficina: " . $e->getMessage());
+            Log::error('Excepción al consultar GOficina', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return ['success' => false, 'message' => $e->getMessage(), 'data' => []];
         }
     }
@@ -551,8 +508,6 @@ class SunarpService implements SunarpServiceInterface
                 ]
             ];
 
-            error_log("LASIRSARP Request: " . json_encode($data, JSON_UNESCAPED_UNICODE));
-
             $curlResult = $this->httpClient->execute($url, $data, 'POST', 'SUNARP (LASIRSARP)', 60);
 
             if (!$curlResult['success']) {
@@ -560,11 +515,9 @@ class SunarpService implements SunarpServiceInterface
             }
 
             $jsonResponse = json_decode($curlResult['response'], true);
-            error_log("Este es el jsonResponse: " . print_r($jsonResponse, true));
 
             if ($curlResult['httpCode'] == 200) {
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    error_log("Error JSON LASIRSARP: " . json_last_error_msg());
                     return ['success' => false, 'message' => 'Error al decodificar respuesta', 'data' => []];
                 }
 
@@ -573,7 +526,12 @@ class SunarpService implements SunarpServiceInterface
                 return ['success' => false, 'message' => "Error HTTP {$curlResult['httpCode']}", 'data' => []];
             }
         } catch (\Exception $e) {
-            error_log("Exception en ejecutarLASIRSARP: " . $e->getMessage());
+            Log::error('Excepción al consultar LASIRSARP', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return ['success' => false, 'message' => 'Error: ' . $e->getMessage(), 'data' => []];
         }
     }
@@ -610,7 +568,6 @@ class SunarpService implements SunarpServiceInterface
                         'categoria' => 'asiento'
                     ];
                 }
-                error_log("Asientos procesados: " . count($listAsientos));
             }
 
             // 2. PROCESAR FICHAS
@@ -629,15 +586,11 @@ class SunarpService implements SunarpServiceInterface
                         'categoria' => 'ficha'
                     ];
                 }
-                error_log("Fichas procesadas: " . count($listFichas));
             }
 
             if (empty($todosLosElementos)) {
-                error_log("No se encontraron asientos ni fichas");
                 return ['success' => false, 'message' => 'No se encontraron asientos ni fichas registrales', 'data' => []];
             }
-
-            error_log("Total elementos procesados: " . count($todosLosElementos));
 
             return [
                 'success' => true,
@@ -647,7 +600,12 @@ class SunarpService implements SunarpServiceInterface
                 'nroTotalPag' => $nroTotalPag
             ];
         } catch (\Exception $e) {
-            error_log("Exception en procesarRespuestaLASIRSARP: " . $e->getMessage());
+            Log::error('Excepción al procesar respuesta LASIRSARP', [
+                'service' => 'SUNARP',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return ['success' => false, 'message' => 'Error al procesar respuesta: ' . $e->getMessage(), 'data' => []];
         }
     }
@@ -719,8 +677,6 @@ class SunarpService implements SunarpServiceInterface
                 $vehiculo = $jsonResponse['verDetalleRPVExtraResponse']['vehiculo'] ?? [];
                 $limpiado = $this->limpiarRespuesta($vehiculo['estado']);
                 $vehiculo['estado'] = $limpiado;
-
-                error_log("Resultado de vehiculo" . print_r($vehiculo, true));
 
                 return [
                     'success' => true,

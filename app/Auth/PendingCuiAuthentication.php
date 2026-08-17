@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\Models\Usuario;
+use App\Services\Pide\PideCredentialStore;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\ValidationException;
@@ -13,11 +14,18 @@ final class PendingCuiAuthentication
 
     private const TTL_SECONDS = 300;
 
-    public function start(int $usuarioId, bool $remember): void
+    /**
+     * Códigos de módulo (ver database/seeders/data/modulo.json) cuyo acceso
+     * habilita guardar temporalmente la credencial PIDE al iniciar sesión.
+     */
+    private const PIDE_MODULE_CODES = ['DNI', 'RUC', 'PAR'];
+
+    public function start(int $usuarioId, bool $remember, ?string $password = null): void
     {
         Session::put(self::SESSION_KEY, [
             'usuario_id' => $usuarioId,
             'remember' => $remember,
+            'password' => $password,
             'created_at' => now()->timestamp,
         ]);
     }
@@ -40,10 +48,11 @@ final class PendingCuiAuthentication
             (int) $pending['usuario_id'],
             $cui,
             (bool) ($pending['remember'] ?? false),
+            $pending['password'] ?? null,
         );
     }
 
-    public function authenticate(int $usuarioId, string $cui, bool $remember = false): Usuario
+    public function authenticate(int $usuarioId, string $cui, bool $remember = false, ?string $password = null): Usuario
     {
         $usuario = Usuario::find($usuarioId);
 
@@ -59,6 +68,11 @@ final class PendingCuiAuthentication
         ])->save();
 
         Auth::login($usuario, $remember);
+
+        if ($password !== null && $this->tieneAccesoPide($usuario)) {
+            app(PideCredentialStore::class)->store($password);
+        }
+
         $this->clear();
 
         return $usuario;
@@ -67,5 +81,16 @@ final class PendingCuiAuthentication
     public function clear(): void
     {
         Session::forget(self::SESSION_KEY);
+    }
+
+    private function tieneAccesoPide(Usuario $usuario): bool
+    {
+        foreach (self::PIDE_MODULE_CODES as $codigo) {
+            if ($usuario->tieneAccesoModulo($codigo)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

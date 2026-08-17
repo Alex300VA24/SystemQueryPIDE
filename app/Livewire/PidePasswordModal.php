@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Http\Requests\PidePasswordRequest;
 use App\Services\Pide\Contracts\ReniecServiceInterface;
+use App\Services\Pide\PideCredentialStore;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -61,12 +62,11 @@ final class PidePasswordModal extends Component
             return;
         }
 
-        $nuevaPassword = $this->credencialNueva;
-        session(['pide_password' => $nuevaPassword]);
+        app(PideCredentialStore::class)->store($this->credencialNueva);
 
         $this->dispatch('pide-alert', message: 'Contraseña PIDE actualizada correctamente.', type: 'success');
         $this->closeModal();
-        $this->dispatch('pide-credential-saved', pidePassword: $nuevaPassword);
+        $this->dispatch('pide-credential-saved');
     }
 
     public function render()

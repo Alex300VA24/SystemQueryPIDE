@@ -4,6 +4,7 @@ namespace App\Services\Pide;
 
 use App\Services\Pide\Contracts\PideHttpClientInterface;
 use App\Services\Pide\Contracts\ReniecServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Servicio de consultas RENIEC.
@@ -114,8 +115,11 @@ class ReniecService implements ReniecServiceInterface
                 ];
             }
 
-            error_log("RENIEC Response Code: " . $curlResult['httpCode']);
-            error_log("RENIEC Response: " . substr($curlResult['response'], 0, 500));
+            Log::info('Consulta RENIEC completada', [
+                'service' => 'RENIEC',
+                'user_id' => auth()->id(),
+                'http_code' => $curlResult['httpCode'],
+            ]);
 
             if ($curlResult['httpCode'] == 200) {
                 $jsonResponse = json_decode($curlResult['response'], true);
@@ -242,7 +246,12 @@ class ReniecService implements ReniecServiceInterface
 
     private function exceptionResult(string $accion, \Exception $exception): array
     {
-        error_log("Exception en $accion: " . $exception->getMessage());
+        Log::error("Excepción PIDE al $accion", [
+            'service' => 'RENIEC',
+            'user_id' => auth()->id(),
+            'exception' => $exception->getMessage(),
+        ]);
+
         return [
             'success' => false,
             'message' => "Error al $accion: " . $exception->getMessage(),

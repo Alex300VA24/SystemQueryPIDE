@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Http\Requests\ActualizarPasswordRequest;
-use Illuminate\Support\Facades\Hash;
+use App\Services\ChangeUserPasswordService;
 use Livewire\Component;
 
 final class ActualizarPassword extends Component
@@ -20,7 +20,7 @@ final class ActualizarPassword extends Component
         $this->resetValidation();
     }
 
-    public function update()
+    public function update(ChangeUserPasswordService $service)
     {
         $usuario = auth()->user();
 
@@ -30,11 +30,10 @@ final class ActualizarPassword extends Component
             ActualizarPasswordRequest::validationAttributes(),
         );
 
-        $usuario->forceFill([
-            'password_hash' => Hash::make($this->password),
-            'requiere_cambio_password' => false,
-            'fecha_actualizacion_password' => now(),
-        ])->save();
+        $currentPassword = $this->currentPassword;
+        $newPassword = $this->password;
+
+        $service->change($usuario, $currentPassword, $newPassword);
 
         $this->clearForm();
 

@@ -4,6 +4,7 @@ namespace App\Services\Pide;
 
 use App\Services\Pide\Contracts\PideHttpClientInterface;
 use App\Services\Pide\Contracts\SunatServiceInterface;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Servicio de consultas SUNAT.
@@ -33,8 +34,6 @@ class SunatService implements SunatServiceInterface
 
             $curlResult = $this->httpClient->execute($url, null, 'GET', 'SUNAT');
 
-            error_log("SUNAT REST Response HTTP Code: " . $curlResult['httpCode']);
-
             if (!$curlResult['success']) {
                 return [
                     'success' => false,
@@ -42,6 +41,12 @@ class SunatService implements SunatServiceInterface
                     'data' => null
                 ];
             }
+
+            Log::info('Consulta RUC (SUNAT)', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'http_code' => $curlResult['httpCode'],
+            ]);
 
             if ($curlResult['httpCode'] == 200) {
                 return $this->procesarRespuestaJSON($curlResult['response'], $ruc);
@@ -74,11 +79,13 @@ class SunatService implements SunatServiceInterface
             $razonSocialParam = rawurlencode($razonSocial);
             $url = $this->urlSUNATRest . '/RazonSocial?RSocial=' . $razonSocialParam . '&out=json';
 
-            error_log("URL búsqueda razón social: $url");
-
             $curlResult = $this->httpClient->execute($url, null, 'GET', 'SUNAT');
 
-            error_log("SUNAT REST Búsqueda Response HTTP Code: " . $curlResult['httpCode']);
+            Log::info('Búsqueda por razón social (SUNAT)', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'http_code' => $curlResult['httpCode'],
+            ]);
 
             if (!$curlResult['success']) {
                 return [
@@ -110,7 +117,12 @@ class SunatService implements SunatServiceInterface
                 ];
             }
         } catch (\Exception $e) {
-            error_log("Exception en buscarPorRazonSocial: " . $e->getMessage());
+            Log::error('Excepción al buscar por razón social (SUNAT)', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return [
                 'success' => false,
                 'message' => 'Error al buscar razón social: ' . $e->getMessage(),
@@ -137,7 +149,6 @@ class SunatService implements SunatServiceInterface
             }
 
             if (!isset($respuesta['list']['multiRef'])) {
-                error_log("Respuesta SUNAT inesperada: " . print_r($respuesta, true));
                 return [
                     'success' => false,
                     'message' => 'Formato de respuesta inválido de SUNAT',
@@ -164,12 +175,16 @@ class SunatService implements SunatServiceInterface
 
             $resultado['data']['direccion_completa'] = $this->construirDireccionDesdeArray($resultado['data']);
 
-            $this->registrarConsulta('RUC', $ruc, $resultado['data']);
+            $this->registrarConsulta('RUC');
 
             return $resultado;
         } catch (\Exception $e) {
-            error_log("Exception en procesarRespuestaJSON: " . $e->getMessage());
-            error_log("Stack trace: " . $e->getTraceAsString());
+            Log::error('Excepción al procesar respuesta SUNAT', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return [
                 'success' => false,
                 'message' => 'Error al procesar respuesta: ' . $e->getMessage(),
@@ -181,12 +196,9 @@ class SunatService implements SunatServiceInterface
     private function procesarRespuestaBusquedaJSON(string $jsonResponse): array
     {
         try {
-            error_log("Procesando respuesta de búsqueda por razón social");
-
             $respuesta = json_decode($jsonResponse, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                error_log("Error JSON decode: " . json_last_error_msg());
                 return [
                     'success' => false,
                     'message' => 'Error al decodificar respuesta JSON de SUNAT: ' . json_last_error_msg(),
@@ -195,7 +207,6 @@ class SunatService implements SunatServiceInterface
             }
 
             if (!isset($respuesta['list']['multiRef'])) {
-                error_log("No se encontró multiRef en la respuesta");
                 return [
                     'success' => false,
                     'message' => 'No se encontraron resultados para la razón social consultada',
@@ -218,15 +229,10 @@ class SunatService implements SunatServiceInterface
                 $multiRef = [$multiRef];
             }
 
-            error_log("Total de resultados encontrados: " . count($multiRef));
-
             $resultados = [];
 
-            foreach ($multiRef as $index => $datos) {
+            foreach ($multiRef as $datos) {
                 $ruc = $this->extraerValorSunat('ddp_numruc', $datos);
-                $nombre = $this->extraerValorSunat('ddp_nombre', $datos);
-
-                error_log("Procesando resultado $index: RUC=$ruc, Nombre=$nombre");
 
                 if (!empty($ruc)) {
                     $resultado = $this->mapearDatosSunat($datos, $ruc);
@@ -234,9 +240,6 @@ class SunatService implements SunatServiceInterface
                     $resultado['direccion_completa'] = $this->construirDireccionDesdeArray($resultado);
 
                     $resultados[] = $resultado;
-                    error_log("Resultado procesado exitosamente");
-                } else {
-                    error_log("Registro sin RUC, se omite");
                 }
             }
 
@@ -248,8 +251,6 @@ class SunatService implements SunatServiceInterface
                 ];
             }
 
-            error_log("Total de resultados procesados: " . count($resultados));
-
             return [
                 'success' => true,
                 'message' => 'Búsqueda exitosa',
@@ -257,7 +258,12 @@ class SunatService implements SunatServiceInterface
                 'total' => count($resultados)
             ];
         } catch (\Exception $e) {
-            error_log("Exception en procesarRespuestaBusquedaJSON: " . $e->getMessage());
+            Log::error('Excepción al procesar búsqueda SUNAT', [
+                'service' => 'SUNAT',
+                'user_id' => auth()->id(),
+                'exception' => $e->getMessage(),
+            ]);
+
             return [
                 'success' => false,
                 'message' => 'Error al procesar respuesta: ' . $e->getMessage(),
@@ -405,19 +411,13 @@ class SunatService implements SunatServiceInterface
         return in_array($valorStr, ['true', '1', 'yes', 'si', 'sí']);
     }
 
-    private function registrarConsulta(string $tipo, string $documento, array $respuesta): void
+    private function registrarConsulta(string $tipo): void
     {
-        try {
-            error_log(sprintf(
-                "[%s] Consulta %s: %s - %s",
-                date('Y-m-d H:i:s'),
-                $tipo,
-                $documento,
-                $respuesta['razon_social'] ?? 'N/A'
-            ));
-        } catch (\Exception $e) {
-            error_log("Error al registrar consulta: " . $e->getMessage());
-        }
+        Log::info('Consulta SUNAT completada', [
+            'service' => 'SUNAT',
+            'tipo' => $tipo,
+            'user_id' => auth()->id(),
+        ]);
     }
 
     private function serviceErrorResult(string $servicio, int $httpCode): array
@@ -431,7 +431,12 @@ class SunatService implements SunatServiceInterface
 
     private function exceptionResult(string $accion, \Exception $exception): array
     {
-        error_log("Exception en $accion: " . $exception->getMessage());
+        Log::error("Excepción SUNAT al $accion", [
+            'service' => 'SUNAT',
+            'user_id' => auth()->id(),
+            'exception' => $exception->getMessage(),
+        ]);
+
         return [
             'success' => false,
             'message' => "Error al $accion: " . $exception->getMessage(),

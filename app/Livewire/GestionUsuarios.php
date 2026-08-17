@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Contracts\UserManagementService;
 use App\Http\Requests\UsuarioRequest;
 use App\Models\CatEstado;
+use App\Models\Modulo;
 use App\Models\Rol;
 use App\Models\TipoDocumento;
 use App\Models\Usuario;
@@ -14,6 +15,11 @@ use Livewire\WithPagination;
 final class GestionUsuarios extends Component
 {
     use WithPagination;
+
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->tieneAccesoModuloId(Modulo::ID_USUARIOS), 403);
+    }
 
     public string $activeTab = 'create';
 

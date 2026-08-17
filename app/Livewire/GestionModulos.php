@@ -15,6 +15,11 @@ final class GestionModulos extends Component
 {
     use WithPagination;
 
+    public function boot(): void
+    {
+        abort_unless(auth()->user()?->tieneAccesoModuloId(Modulo::ID_MODULOS), 403);
+    }
+
     public string $activeTab = 'create';
 
     public string $search = '';

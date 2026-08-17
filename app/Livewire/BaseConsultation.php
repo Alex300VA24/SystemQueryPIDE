@@ -3,6 +3,9 @@
 namespace App\Livewire;
 
 use App\Http\Requests\ConsultaRequest;
+use App\Services\Pide\PideCredentialStore;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Throwable;
@@ -12,8 +15,6 @@ abstract class BaseConsultation extends Component
     public string $busqueda = '';
 
     public string $dniUsuario = '';
-
-    public string $pidePassword = '';
 
     public bool $searched = false;
 
@@ -31,10 +32,17 @@ abstract class BaseConsultation extends Component
 
     public bool $pideCredentialExpired = false;
 
+    public string $pdfToken = '';
+
+    /**
+     * Minutos que un resultado de consulta permanece disponible en caché
+     * para poder generar el PDF sin volver a confiar en datos del cliente.
+     */
+    private const PDF_TOKEN_TTL_MINUTES = 10;
+
     public function mount(): void
     {
         $this->dniUsuario = (string) (auth()->user()?->persona?->documento_numero ?? '');
-        $this->pidePassword = (string) session('pide_password', '');
     }
 
     abstract protected function page(): array;
@@ -49,9 +57,8 @@ abstract class BaseConsultation extends Component
     }
 
     #[On('pide-credential-saved')]
-    public function onPideCredentialSaved(string $pidePassword): void
+    public function onPideCredentialSaved(): void
     {
-        $this->pidePassword = $pidePassword;
         $this->search();
     }
 
@@ -66,7 +73,7 @@ abstract class BaseConsultation extends Component
             ConsultaRequest::validationAttributes($this->page()['field']),
         );
 
-        if (($this->page()['needsCredentials'] ?? false) && trim($this->pidePassword) === '') {
+        if (($this->page()['needsCredentials'] ?? false) && ! app(PideCredentialStore::class)->has()) {
             $this->dispatch('open-pide-credential-modal');
 
             return;
@@ -76,6 +83,7 @@ abstract class BaseConsultation extends Component
         $this->successMessage = null;
         $this->photo = null;
         $this->pideCredentialExpired = false;
+        $this->pdfToken = '';
         $real = null;
 
         try {
@@ -89,6 +97,7 @@ abstract class BaseConsultation extends Component
             $this->result = $real;
             $this->real = true;
             $this->successMessage = 'Consulta realizada exitosamente.';
+            $this->pdfToken = $this->cacheResultForPdf();
         } else {
             $this->errorMessage ??= 'Servicio PIDE no disponible en este momento.';
             $this->result = $this->page()['result'];
@@ -96,8 +105,7 @@ abstract class BaseConsultation extends Component
         }
 
         if ($this->pideCredentialExpired) {
-            session()->forget('pide_password');
-            $this->pidePassword = '';
+            app(PideCredentialStore::class)->forget();
             $this->dispatch('open-pide-password-modal', dniUsuario: $this->dniUsuario, message: $this->errorMessage);
         }
 
@@ -106,8 +114,30 @@ abstract class BaseConsultation extends Component
 
     public function resetSearch(): void
     {
-        $this->reset('busqueda', 'searched', 'result', 'real', 'errorMessage', 'successMessage', 'photo', 'oficina');
+        $this->reset('busqueda', 'searched', 'result', 'real', 'errorMessage', 'successMessage', 'photo', 'oficina', 'pdfToken');
         $this->resetValidation();
+    }
+
+    /**
+     * Guarda el resultado validado de la consulta en caché del servidor,
+     * asociado al usuario autenticado, para que DniPdfController pueda
+     * generar el PDF sin depender de datos enviados por el navegador.
+     */
+    private function cacheResultForPdf(): string
+    {
+        $token = (string) Str::uuid();
+
+        Cache::put(
+            "reniec_result:{$token}",
+            [
+                'user_id' => auth()->id(),
+                'result' => $this->result,
+                'photo' => $this->photo,
+            ],
+            now()->addMinutes(self::PDF_TOKEN_TTL_MINUTES),
+        );
+
+        return $token;
     }
 
     public function render()

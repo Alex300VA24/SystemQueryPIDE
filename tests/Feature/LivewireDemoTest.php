@@ -15,6 +15,7 @@ use App\Models\Modulo;
 use App\Models\Rol;
 use App\Models\Usuario;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
+use App\Services\Pide\PideCredentialStore;
 use Database\Seeders\PideProductionDataSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
@@ -62,10 +63,11 @@ class LivewireDemoTest extends TestCase
 
     public function test_dni_search_falls_back_to_demo_without_pide_access(): void
     {
+        app(PideCredentialStore::class)->store('secret');
+
         Livewire::test(ConsultaDni::class)
             ->set('busqueda', '74251836')
             ->set('dniUsuario', '12345678')
-            ->set('pidePassword', 'secret')
             ->call('search')
             ->assertHasNoErrors()
             ->assertSet('searched', true)
@@ -128,21 +130,26 @@ class LivewireDemoTest extends TestCase
         Livewire::actingAs($usuario)
             ->test(ActualizarPassword::class)
             ->set('currentPassword', 'password')
-            ->set('password', 'nueva-clave')
-            ->set('password_confirmation', 'nueva-clave')
+            ->set('password', 'NuevaClave#26')
+            ->set('password_confirmation', 'NuevaClave#26')
             ->call('update')
             ->assertHasNoErrors()
             ->assertDispatched('password-updated');
 
-        $this->assertTrue(Hash::check('nueva-clave', $usuario->fresh()->password_hash));
+        $this->assertTrue(Hash::check('NuevaClave#26', $usuario->fresh()->password_hash));
     }
 
     public function test_user_management_filters_sorts_and_persists(): void
     {
+        $this->seed(PideProductionDataSeeder::class);
+        $admin = Usuario::factory()->create();
+        $admin->roles()->attach(Rol::where('codigo', 'ADMIN')->value('id'), ['fecha_asignacion' => now(), 'activo' => true]);
+
         $rol = Rol::create(['codigo' => 'OPERADOR', 'nombre' => 'Operador', 'nivel' => 1, 'activo' => true]);
         Usuario::factory()->create(['username' => 'mquispe']);
 
-        Livewire::test(GestionUsuarios::class)
+        Livewire::actingAs($admin)
+            ->test(GestionUsuarios::class)
             ->call('showListTab')->set('search', 'mquispe')->assertSee('mquispe')
             ->set('perPage', 5)->assertViewHas('users', fn ($users) => $users->perPage() === 5)
             ->call('sort', 'email')->assertSet('sortBy', 'email')
@@ -155,7 +162,7 @@ class LivewireDemoTest extends TestCase
             ->set('email', 'nuevo@example.test')
             ->set('roleId', (string) $rol->id)
             ->set('cui', '4')
-            ->set('password', 'password')->set('password_confirmation', 'password')
+            ->set('password', 'ClaveFuerte#26')->set('password_confirmation', 'ClaveFuerte#26')
             ->call('save')
             ->assertHasNoErrors()->assertSet('activeTab', 'create');
 
@@ -166,9 +173,12 @@ class LivewireDemoTest extends TestCase
     public function test_role_management_filters_and_persists(): void
     {
         $this->seed(PideProductionDataSeeder::class);
+        $admin = Usuario::factory()->create();
+        $admin->roles()->attach(Rol::where('codigo', 'ADMIN')->value('id'), ['fecha_asignacion' => now(), 'activo' => true]);
         $module = Modulo::query()->where('activo', true)->firstOrFail();
 
-        Livewire::test(GestionRoles::class)
+        Livewire::actingAs($admin)
+            ->test(GestionRoles::class)
             ->set('perPage', 5)->assertViewHas('roles', fn ($roles) => $roles->perPage() === 5)
             ->call('showCreateTab')->set('codigo', 'SUPERVISOR_TEST')->set('nombre', 'Supervisor de área')
             ->set('nivel', 5)->set('selectedModuleIds', [(string) $module->id])
@@ -182,9 +192,12 @@ class LivewireDemoTest extends TestCase
     public function test_module_management_persists_hierarchy(): void
     {
         $this->seed(PideProductionDataSeeder::class);
+        $admin = Usuario::factory()->create();
+        $admin->roles()->attach(Rol::where('codigo', 'ADMIN')->value('id'), ['fecha_asignacion' => now(), 'activo' => true]);
         $parent = Modulo::where('codigo', 'CON')->firstOrFail();
 
-        Livewire::test(GestionModulos::class)
+        Livewire::actingAs($admin)
+            ->test(GestionModulos::class)
             ->call('showCreateTab')
             ->set('sistemaId', (string) $parent->sistema_id)
             ->set('codigo', 'NUEVO')

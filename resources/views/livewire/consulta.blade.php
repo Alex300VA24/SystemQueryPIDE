@@ -83,16 +83,8 @@
                 <div class="consulta-result-actions">
                     <form method="POST" action="{{ route('consulta.dni.pdf') }}">
                         @csrf
-                        <input type="hidden" name="dni" value="{{ $result['DNI'] ?? '' }}">
-                        <input type="hidden" name="nombres" value="{{ $result['Nombres'] ?? '' }}">
-                        <input type="hidden" name="apellido_paterno" value="{{ $result['Apellido paterno'] ?? '' }}">
-                        <input type="hidden" name="apellido_materno" value="{{ $result['Apellido materno'] ?? '' }}">
-                        <input type="hidden" name="estado_civil" value="{{ $result['Estado civil'] ?? '' }}">
-                        <input type="hidden" name="direccion" value="{{ $result['Dirección'] ?? '' }}">
-                        <input type="hidden" name="restriccion" value="{{ $result['Restricción'] ?? '' }}">
-                        <input type="hidden" name="ubigeo" value="{{ $result['Ubigeo'] ?? '' }}">
-                        <input type="hidden" name="foto" value="{{ $photo ?? '' }}">
-                        <button type="submit" class="consulta-button consulta-button-pdf" @disabled(!($searched && $real))><x-icon name="pdf" /> Exportar PDF</button>
+                        <input type="hidden" name="token" value="{{ $pdfToken ?? '' }}">
+                        <button type="submit" class="consulta-button consulta-button-pdf" @disabled(!($searched && $real && ($pdfToken ?? '')))><x-icon name="pdf" /> Exportar PDF</button>
                     </form>
                     <button type="button" class="consulta-button consulta-button-print" onclick="window.print()" @disabled(!$searched)><x-icon name="print" /> Imprimir</button>
                 </div>

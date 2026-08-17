@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Http\Requests\PideCredentialRequest;
+use App\Services\Pide\PideCredentialStore;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -35,12 +36,11 @@ final class PideCredentialModal extends Component
             PideCredentialRequest::validationAttributes(),
         );
 
-        session(['pide_password' => $this->password]);
-        $password = $this->password;
+        app(PideCredentialStore::class)->store($this->password);
 
         $this->closeModal();
 
-        $this->dispatch('pide-credential-saved', pidePassword: $password);
+        $this->dispatch('pide-credential-saved');
     }
 
     public function render()
