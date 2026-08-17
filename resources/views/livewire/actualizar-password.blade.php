@@ -35,7 +35,7 @@
                                 <i class="fas" :class="visible ? 'fa-eye' : 'fa-eye-slash'"></i>
                             </button>
                         </div>
-                        <small class="password-hint">Mínimo 6 caracteres</small>
+                        <small class="password-hint">Mínimo 8 caracteres</small>
                         @error('password')<span class="field-error" role="alert">{{ $message }}</span>@enderror
                     </div>
 
