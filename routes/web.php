@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DniPdfController;
+use App\Http\Controllers\PartidaRegistralPdfController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,6 +21,7 @@ Route::get('/', fn () => redirect()->route('dashboard'));
 Route::middleware('auth')->group(function () {
     Route::get('dashboard', DashboardController::class)->name('dashboard');
     Route::post('consulta/dni/pdf', DniPdfController::class)->name('consulta.dni.pdf');
+    Route::post('consulta/partida/pdf', PartidaRegistralPdfController::class)->name('consulta.partida.pdf');
 });
 
 require __DIR__.'/auth.php';

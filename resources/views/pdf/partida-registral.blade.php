@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="utf-8">
-    <title>Partida registral {{ $numero }}</title>
+    <title>Partida registral</title>
     <style>
         @page { margin: 0; }
         html, body { margin: 0; padding: 0; }
@@ -16,7 +16,7 @@
     @foreach($images as $image)
         <div class="page">
             <div class="page-inner">
-                <img src="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" alt="">
+                <img src="data:image/jpeg;base64,{{ $image }}" alt="">
             </div>
         </div>
     @endforeach

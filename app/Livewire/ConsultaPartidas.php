@@ -5,8 +5,8 @@ namespace App\Livewire;
 use App\Http\Requests\ConsultaPartidasRequest;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
 use App\Services\Pide\PideCredentialStore;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Throwable;
 
@@ -201,28 +201,6 @@ class ConsultaPartidas extends BaseConsultation
         $this->resetValidation();
     }
 
-    public function downloadPdf()
-    {
-        $images = collect($this->detail['imagenes'] ?? [])
-            ->filter(fn (array $image) => ! empty($image['imagen_base64']))
-            ->values()
-            ->all();
-
-        if ($images === []) {
-            $this->setStatus('No hay imágenes disponibles para generar el PDF.', 'warning');
-
-            return null;
-        }
-
-        $numero = (string) ($this->selectedPartida['numero_partida'] ?? $this->selectedPartida['numeroPartida'] ?? 'registral');
-        $filename = 'partida-'.(preg_replace('/[^A-Za-z0-9_-]/', '-', $numero) ?: 'registral').'.pdf';
-
-        return Pdf::loadView('pdf.partida-registral', [
-            'images' => $images,
-            'numero' => $numero,
-        ])->setPaper('a4')->download($filename);
-    }
-
     public function render()
     {
         $offset = ($this->partidasPage - 1) * $this->partidasPerPage;
@@ -294,6 +272,7 @@ class ConsultaPartidas extends BaseConsultation
 
             $this->detail = $response['data'] ?? [];
             $this->selectedPartida = array_merge($partida, $this->detail);
+            $this->pdfToken = $this->cachePartidaForPdf($numero);
             $this->searched = true;
         } catch (Throwable $e) {
             report($e);
@@ -312,6 +291,7 @@ class ConsultaPartidas extends BaseConsultation
         $this->searched = false;
         $this->statusMessage = null;
         $this->activeModal = null;
+        $this->pdfToken = '';
     }
 
     private function clearResults(): void
@@ -322,6 +302,38 @@ class ConsultaPartidas extends BaseConsultation
         $this->partidasPage = 1;
         $this->searched = false;
         $this->statusMessage = null;
+        $this->pdfToken = '';
+    }
+
+    private function cachePartidaForPdf(string $numero): string
+    {
+        $images = collect($this->detail['imagenes'] ?? [])
+            ->pluck('imagen_base64')
+            ->filter(fn ($image) => is_string($image) && $image !== '')
+            ->map(function (string $image): ?string {
+                $image = preg_replace('/^data:image\/[a-zA-Z0-9.+-]+;base64,/', '', $image) ?? '';
+                $image = preg_replace('/\s+/', '', $image) ?? '';
+                $binary = base64_decode($image, true);
+
+                return $binary === false ? null : base64_encode($binary);
+            })
+            ->filter()
+            ->values()
+            ->all();
+
+        if ($images === []) {
+            return '';
+        }
+
+        $token = (string) Str::uuid();
+
+        Cache::put("sunarp_partida_pdf:{$token}", [
+            'user_id' => auth()->id(),
+            'numero' => preg_replace('/[^A-Za-z0-9_-]/', '', $numero) ?: 'registral',
+            'images' => $images,
+        ], now()->addMinutes(10));
+
+        return $token;
     }
 
     private function setStatus(string $message, string $type): void

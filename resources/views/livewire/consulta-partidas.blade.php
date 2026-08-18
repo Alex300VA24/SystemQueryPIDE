@@ -186,10 +186,13 @@
                         @endif
                     @endforeach
                 </div>
-                <button type="button" class="sunarp-pdf-button" wire:click="downloadPdf" wire:loading.attr="disabled" wire:target="downloadPdf">
-                    <span wire:loading.remove wire:target="downloadPdf"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Descargar todas en PDF</span>
-                    <span wire:loading.flex wire:target="downloadPdf"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Generando PDF…</span>
-                </button>
+                <form method="POST" action="{{ route('consulta.partida.pdf') }}">
+                    @csrf
+                    <input type="hidden" name="token" value="{{ $pdfToken }}">
+                    <button type="submit" class="sunarp-pdf-button" @disabled(!$pdfToken)>
+                        <i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Descargar todas en PDF
+                    </button>
+                </form>
                 <div class="sunarp-image-stage">
                     @foreach($images as $index => $image)
                         @if(!empty($image['imagen_base64']))<img x-show="image === {{ $index }}" x-bind:style="`transform: scale(${zoom}); transform-origin: top center`" src="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" alt="Página registral {{ $index + 1 }}" x-cloak>@endif
