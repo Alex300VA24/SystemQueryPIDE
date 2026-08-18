@@ -179,7 +179,7 @@
    GESTIÓN DE MÓDULOS — estilo legacy (usuario.css) migrado 1:1
    ============================================ */
 @layer components {
-    .modulo-legacy { --m-primary:#4f46e5; --m-primary-hover:#4338ca; --m-secondary:#64748b; --m-secondary-hover:#475569; --m-success:#10b981; --m-danger:#ef4444; --m-warning:#f59e0b; --m-info:#3b82f6; --m-bg:#f8fafc; --m-surface:#fff; --m-text:#1e293b; --m-text-muted:#64748b; --m-border:#e2e8f0; --m-shadow-sm:0 1px 2px 0 rgba(0,0,0,.05); --m-shadow-md:0 4px 6px -1px rgba(0,0,0,.1); --m-shadow-lg:0 10px 15px -3px rgba(0,0,0,.1); --m-r-sm:6px; --m-r-md:8px; --m-r-lg:12px; max-width:1200px; margin:0 auto; padding:20px; }
+    .modulo-legacy { --m-primary:#4f46e5; --m-primary-hover:#4338ca; --m-secondary:#64748b; --m-secondary-hover:#475569; --m-success:#10b981; --m-danger:#ef4444; --m-warning:#f59e0b; --m-info:#3b82f6; --m-bg:#f8fafc; --m-surface:#fff; --m-text:#1e293b; --m-text-muted:#64748b; --m-border:#e2e8f0; --m-shadow-sm:0 1px 2px 0 rgba(0,0,0,.05); --m-shadow-md:0 4px 6px -1px rgba(0,0,0,.1); --m-shadow-lg:0 10px 15px -3px rgba(0,0,0,.1); --m-r-sm:6px; --m-r-md:8px; --m-r-lg:12px; width:100%; max-width:none; margin:0; padding:20px 0; }
 
     .modulo-legacy .page-title { background:var(--m-surface); padding:25px 30px; border-radius:var(--m-r-lg); box-shadow:var(--m-shadow-lg); margin-bottom:25px; border-left:5px solid var(--m-primary); }
     .modulo-legacy .page-title h1 { font-size:28px; font-weight:700; color:var(--m-text); display:flex; align-items:center; gap:12px; margin:0; }
@@ -358,7 +358,7 @@
     .modulo-legacy .modulo-hijo { opacity:0; animation:legacy-module-in .25s ease forwards; }
 
     @media (max-width:768px) {
-        .modulo-legacy { padding:15px; }
+        .modulo-legacy { padding:15px 0; }
         .modulo-legacy .page-title { padding:20px; }
         .modulo-legacy .page-title h1 { font-size:22px; }
         .modulo-legacy .form-section { padding:25px 20px; }
