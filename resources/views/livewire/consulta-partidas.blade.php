@@ -1,4 +1,12 @@
 <div class="consulta-legacy sunarp-legacy page" style="--source:{{ $page['accent'] }}">
+    <div class="sunarp-loading-backdrop" wire:loading.flex wire:target="searchSunarp,selectPartida" role="status" aria-live="polite" aria-label="Cargando información registral">
+        <div class="sunarp-loading-modal">
+            <span class="sunarp-loading-spinner" aria-hidden="true"></span>
+            <strong>Consultando SUNARP</strong>
+            <span>Cargando partidas e imágenes registrales…</span>
+        </div>
+    </div>
+
     <section class="glass consulta-legacy-heading">
         <span class="consulta-source-icon"><x-icon name="fa-solid fa-file-contract" /></span>
         <div>
@@ -65,27 +73,38 @@
         </div>
     @endif
 
-    @if(count($partidas) > 1)
+    @if($partidas)
         <section class="glass sunarp-partidas-selector" aria-labelledby="partidas-title">
             <div class="sunarp-section-title">
                 <div><h2 id="partidas-title"><x-icon name="document" /> Partidas encontradas</h2><p>Selecciona una partida para cargar su detalle.</p></div>
                 <span class="sunarp-count">{{ count($partidas) }} registros</span>
             </div>
-            <div class="sunarp-partidas-table-wrap">
-                <table class="sunarp-table">
-                    <thead><tr><th>Partida</th><th>Placa</th><th>Libro</th><th>Oficina</th><th>Acción</th></tr></thead>
-                    <tbody>
-                        @foreach($visiblePartidas as $index => $partida)
-                            <tr class="{{ ($selectedPartida['numero_partida'] ?? $selectedPartida['numeroPartida'] ?? null) === ($partida['numero_partida'] ?? $partida['numeroPartida'] ?? null) ? 'selected' : '' }}">
-                                <td data-label="Partida"><strong>{{ $partida['numero_partida'] ?? $partida['numeroPartida'] ?? '-' }}</strong></td>
-                                <td data-label="Placa">{{ $partida['numero_placa'] ?? $partida['numeroPlaca'] ?? '-' }}</td>
-                                <td data-label="Libro">{{ $partida['libro'] ?? '-' }}</td>
-                                <td data-label="Oficina">{{ $partida['oficina'] ?? '-' }}</td>
-                                <td data-label="Acción"><button type="button" wire:click="selectPartida({{ $index }})" wire:loading.attr="disabled" class="sunarp-select-button">Seleccionar</button></td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="sunarp-partidas-grid" aria-label="Partidas registrales encontradas">
+                @foreach($visiblePartidas as $index => $partida)
+                    @php
+                        $partidaNumero = $partida['numero_partida'] ?? $partida['numeroPartida'] ?? '-';
+                        $partidaActiva = ($selectedPartida['numero_partida'] ?? $selectedPartida['numeroPartida'] ?? null) === $partidaNumero;
+                        $partidaEstado = $partida['estado'] ?? 'Registrada';
+                    @endphp
+                    <button
+                        type="button"
+                        class="sunarp-partida-card {{ $partidaActiva ? 'active' : '' }}"
+                        wire:click="selectPartida({{ $index }})"
+                        wire:loading.attr="disabled"
+                        wire:target="selectPartida"
+                        aria-pressed="{{ $partidaActiva ? 'true' : 'false' }}"
+                        aria-label="Ver partida número {{ $partidaNumero }}"
+                    >
+                        <span class="sunarp-partida-number"><x-icon name="document" /> <span>Partida N°</span> <strong>{{ $partidaNumero }}</strong></span>
+                        <span class="sunarp-partida-status"><i class="fa-solid fa-circle" aria-hidden="true"></i> {{ $partidaEstado }}</span>
+                        <span class="sunarp-partida-office"><i class="fa-solid fa-building" aria-hidden="true"></i> {{ $partida['oficina'] ?? 'Oficina no indicada' }}</span>
+                        @if(!empty($partida['numero_placa'] ?? $partida['numeroPlaca'] ?? null))
+                            <span class="sunarp-partida-extra"><i class="fa-solid fa-car" aria-hidden="true"></i> Placa {{ $partida['numero_placa'] ?? $partida['numeroPlaca'] }}</span>
+                        @elseif(!empty($partida['libro']))
+                            <span class="sunarp-partida-extra"><i class="fa-solid fa-book" aria-hidden="true"></i> {{ $partida['libro'] }}</span>
+                        @endif
+                    </button>
+                @endforeach
             </div>
             @if($partidasLastPage > 1)
                 <nav class="sunarp-pagination" aria-label="Paginación de partidas">
@@ -117,7 +136,6 @@
                 'Dirección' => $record['direccion'] ?? null,
             ], fn ($value) => $value !== null && $value !== '');
             $images = array_values($detail['imagenes'] ?? []);
-            $asientos = array_values($detail['asientos'] ?? []);
             $vehicle = $detail['datos_vehiculo'] ?? [];
         @endphp
 
@@ -144,19 +162,8 @@
             </article>
         </section>
 
-        @if($asientos)
-            <section class="glass sunarp-detail-section">
-                <div class="sunarp-section-title"><div><h2><x-icon name="fa-solid fa-file-invoice" /> Asientos Registrales</h2><p>Elementos asociados a la partida consultada.</p></div><span class="sunarp-count">{{ count($asientos) }}</span></div>
-                <div class="sunarp-partidas-table-wrap"><table class="sunarp-table"><thead><tr><th>#</th><th>Tipo</th><th>Categoría</th><th>Páginas</th></tr></thead><tbody>
-                    @foreach($asientos as $index => $asiento)
-                        <tr><td data-label="#">{{ $index + 1 }}</td><td data-label="Tipo">{{ $asiento['tipo'] ?? '-' }}</td><td data-label="Categoría">{{ ucfirst($asiento['categoria'] ?? 'asiento') }}</td><td data-label="Páginas">{{ is_array($asiento['listPag'] ?? null) ? count(isset($asiento['listPag'][0]) ? $asiento['listPag'] : [$asiento['listPag']]) : ($asiento['numPag'] ?? '-') }}</td></tr>
-                    @endforeach
-                </tbody></table></div>
-            </section>
-        @endif
-
         @if($images)
-            <section class="glass sunarp-detail-section sunarp-viewer" x-data="{ image: 0, zoom: 1 }">
+            <section class="glass sunarp-detail-section sunarp-viewer" x-data="{ image: 0, zoom: 1, previewOpen: false }" x-on:keydown.escape.window="previewOpen = false">
                 <div class="sunarp-section-title"><div><h2><x-icon name="fa-solid fa-file-image" /> Visor de Documentos</h2><p>Revisa y descarga las páginas registrales.</p></div></div>
                 <div class="sunarp-viewer-toolbar">
                     <label>Página:
@@ -173,12 +180,16 @@
                     @foreach($images as $index => $image)
                         @if(!empty($image['imagen_base64']))
                             <div class="sunarp-image-actions" x-show="image === {{ $index }}" x-cloak>
-                                <a href="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" target="_blank" rel="noopener"><i class="fa-solid fa-expand"></i> Expandir</a>
-                                <a href="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" download="partida_pagina_{{ $index + 1 }}.jpg"><i class="fa-solid fa-download"></i> Descargar</a>
+                                <button type="button" class="sunarp-action-view" x-on:click="previewOpen = true" aria-label="Ver página {{ $index + 1 }} en tamaño completo"><i class="fa-solid fa-eye" aria-hidden="true"></i> Ver</button>
+                                <a class="sunarp-action-download" href="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" download="partida_{{ $record['numero_partida'] ?? $record['numeroPartida'] ?? 'registral' }}_pagina_{{ $index + 1 }}.jpg"><i class="fa-solid fa-download" aria-hidden="true"></i> Descargar</a>
                             </div>
                         @endif
                     @endforeach
                 </div>
+                <button type="button" class="sunarp-pdf-button" wire:click="downloadPdf" wire:loading.attr="disabled" wire:target="downloadPdf">
+                    <span wire:loading.remove wire:target="downloadPdf"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Descargar todas en PDF</span>
+                    <span wire:loading.flex wire:target="downloadPdf"><i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> Generando PDF…</span>
+                </button>
                 <div class="sunarp-image-stage">
                     @foreach($images as $index => $image)
                         @if(!empty($image['imagen_base64']))<img x-show="image === {{ $index }}" x-bind:style="`transform: scale(${zoom}); transform-origin: top center`" src="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" alt="Página registral {{ $index + 1 }}" x-cloak>@endif
@@ -188,6 +199,14 @@
                     @foreach($images as $index => $image)
                         @if(!empty($image['imagen_base64']))<button type="button" x-on:click="image = {{ $index }}; zoom = 1" x-bind:class="image === {{ $index }} ? 'active' : ''"><img src="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" alt="Miniatura {{ $index + 1 }}"></button>@endif
                     @endforeach
+                </div>
+                <div class="sunarp-image-preview" x-show="previewOpen" x-cloak x-transition.opacity x-on:click.self="previewOpen = false" role="dialog" aria-modal="true" aria-label="Vista completa de página registral">
+                    <button type="button" class="sunarp-preview-close" x-on:click="previewOpen = false" aria-label="Cerrar vista completa"><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+                    <div class="sunarp-preview-content">
+                        @foreach($images as $index => $image)
+                            @if(!empty($image['imagen_base64']))<img x-show="image === {{ $index }}" src="data:image/jpeg;base64,{{ $image['imagen_base64'] }}" alt="Página registral {{ $index + 1 }} en tamaño completo" loading="lazy">@endif
+                        @endforeach
+                    </div>
                 </div>
             </section>
         @endif

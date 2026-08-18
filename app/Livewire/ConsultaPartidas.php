@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Http\Requests\ConsultaPartidasRequest;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
 use App\Services\Pide\PideCredentialStore;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Cache;
 use Livewire\Attributes\On;
 use Throwable;
@@ -198,6 +199,28 @@ class ConsultaPartidas extends BaseConsultation
         $this->oficina = '';
         $this->busqueda = '';
         $this->resetValidation();
+    }
+
+    public function downloadPdf()
+    {
+        $images = collect($this->detail['imagenes'] ?? [])
+            ->filter(fn (array $image) => ! empty($image['imagen_base64']))
+            ->values()
+            ->all();
+
+        if ($images === []) {
+            $this->setStatus('No hay imágenes disponibles para generar el PDF.', 'warning');
+
+            return null;
+        }
+
+        $numero = (string) ($this->selectedPartida['numero_partida'] ?? $this->selectedPartida['numeroPartida'] ?? 'registral');
+        $filename = 'partida-'.(preg_replace('/[^A-Za-z0-9_-]/', '-', $numero) ?: 'registral').'.pdf';
+
+        return Pdf::loadView('pdf.partida-registral', [
+            'images' => $images,
+            'numero' => $numero,
+        ])->setPaper('a4')->download($filename);
     }
 
     public function render()
