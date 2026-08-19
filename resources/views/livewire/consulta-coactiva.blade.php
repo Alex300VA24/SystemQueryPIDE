@@ -11,7 +11,7 @@
         <form wire:submit="buscar" class="consulta-search-form" novalidate>
             <div class="field">
                 <label for="tipoDocumento"><x-icon name="id" /> Tipo de documento</label>
-                <select id="tipoDocumento" wire:model="tipoDocumento">
+                <select id="tipoDocumento" wire:model.live="tipoDocumento">
                     <option value="01">DNI</option>
                     <option value="06">RUC</option>
                 </select>
