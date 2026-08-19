@@ -1,0 +1,13 @@
+[
+    {
+        "SIS_id": 2,
+        "SIS_codigo": "PIDE",
+        "SIS_nombre": "Sistema PIDE",
+        "SIS_descripcion": "Sistema de consultas pide",
+        "SIS_url": "/pide",
+        "SIS_icono": "fa-cog",
+        "SIS_version": "1.0",
+        "SIS_orden": 2,
+        "SIS_activo": 1
+    }
+]

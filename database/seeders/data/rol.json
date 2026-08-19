@@ -1,0 +1,10 @@
+[
+    {
+        "ROL_id": 1,
+        "ROL_codigo": "ADMIN",
+        "ROL_nombre": "ADMINISTRADOR",
+        "ROL_descripcion": "Acceso total al sistema",
+        "ROL_nivel": 10,
+        "ROL_activo": 1
+    }
+]

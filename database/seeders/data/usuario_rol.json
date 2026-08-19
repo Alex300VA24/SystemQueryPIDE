@@ -1,0 +1,11 @@
+[
+    {
+        "USR_id": 0,
+        "USR_usuario_id": 1,
+        "USR_rol_id": 1,
+        "USR_fecha_asignacion": "2025-11-27T11:39:22.3133333",
+        "USR_fecha_expiracion": null,
+        "USR_asignado_por": null,
+        "USR_activo": 1
+    }
+]

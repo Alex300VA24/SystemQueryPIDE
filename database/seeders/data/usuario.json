@@ -1,0 +1,17 @@
+[
+    {
+        "USU_id": 1,
+        "USU_persona_id": 1,
+        "USU_username": "admin",
+        "USU_password_hash": "$2y$10$KkMRaP9FLibYu31DlRpNYucPmDBEfDhcOZUzGMzu9Zu.mAp4/V3SG",
+        "USU_email": "admin@example.test",
+        "USU_requiere_cambio_password": 1,
+        "USU_intentos_fallidos": 0,
+        "USU_fecha_ultimo_acceso": null,
+        "USU_estado_id": 1,
+        "USU_fecha_registro": "2025-11-27T11:39:22.3133333",
+        "USU_fecha_actualizacion_password": "2026-08-17T22:38:20.2400000",
+        "USU_cui": "0",
+        "USU_telefono": null
+    }
+]

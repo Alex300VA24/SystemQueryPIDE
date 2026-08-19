@@ -1,0 +1,29 @@
+[
+    {
+        "PER_id": 1,
+        "PER_tipo_personal_id": 5,
+        "PER_documento_tipo_id": 1,
+        "PER_documento_numero": "00000000",
+        "PER_apellido_paterno": "ADMINISTRADOR",
+        "PER_apellido_materno": null,
+        "PER_nombres": "SISTEMA",
+        "PER_fecha_nacimiento": null,
+        "PER_sexo": "M",
+        "PER_estado_civil_id": null,
+        "PER_nacionalidad_id": null,
+        "PER_telefono_fijo": null,
+        "PER_telefono_movil": null,
+        "PER_direccion": null,
+        "PER_ubicacion_id": null,
+        "PER_via_nombre": null,
+        "PER_via_numero": null,
+        "PER_via_mz": null,
+        "PER_via_lote": null,
+        "PER_foto_url": null,
+        "PER_grado_instruccion_id": null,
+        "PER_estado_id": 1,
+        "PER_fecha_registro": "2025-11-27T11:39:22.3133333",
+        "PER_fecha_actualizacion": "2025-11-27T11:39:22.3133333",
+        "PER_tipo_persona": 1
+    }
+]
