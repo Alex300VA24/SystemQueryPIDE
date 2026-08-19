@@ -11,6 +11,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased text-ink">
+        <script>window.PIDE_LOGIN_URL = "{{ route('login') }}";</script>
         <a href="#contenido" class="skip-link">Saltar al contenido</a>
         {{ $slot }}
     </body>

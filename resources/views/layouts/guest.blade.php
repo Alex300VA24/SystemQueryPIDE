@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
     </head>
     <body>
+        <script>window.PIDE_LOGIN_URL = "{{ route('login') }}";</script>
         <main aria-label="Acceso al Sistema PIDE">{{ $slot }}</main>
     </body>
 </html>

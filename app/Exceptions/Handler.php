@@ -51,7 +51,14 @@ class Handler extends ExceptionHandler
             return parent::render($request, $e);
         }
 
-        $status = $this->isHttpException($e) ? $e->getStatusCode() : 500;
+        $status = $this->isHttpException($e) ? $e->getStatusCode() : ($e instanceof TokenMismatchException ? 419 : 500);
+
+        if ($request->expectsJson() || $request->ajax() || $request->hasHeader('X-Livewire')) {
+            return response()->json([
+                'title' => $this->tituloError($e, $status),
+                'message' => $this->mensajeError($e, $status),
+            ], $status);
+        }
 
         if (in_array($status, self::STATUS_CON_VISTA_PROPIA, true)) {
             return response()->view("errors.$status", [], $status);
@@ -74,6 +81,18 @@ class Handler extends ExceptionHandler
             $e instanceof ModelNotFoundException => 'Registro no encontrado',
             $e instanceof TokenMismatchException => 'Sesión expirada',
             default => $status === 500 ? 'Error del servidor' : "Error {$status}",
+        };
+    }
+
+    private function mensajeError(Throwable $e, int $status): string
+    {
+        return match (true) {
+            $e instanceof TokenMismatchException => 'Tu sesión ha caducado por inactividad. Vuelve a iniciar sesión para continuar.',
+            $status === 419 => 'Tu sesión ha caducado por inactividad. Vuelve a iniciar sesión para continuar.',
+            $status === 500 => 'Ocurrió un error inesperado. Intenta nuevamente en unos momentos.',
+            $status === 403 => 'No tienes permisos para realizar esta acción.',
+            $status === 404 => 'El recurso solicitado no existe.',
+            default => config('app.debug') ? ($e->getMessage() ?: 'Ocurrió un error inesperado.') : 'Ocurrió un error inesperado.',
         };
     }
 
