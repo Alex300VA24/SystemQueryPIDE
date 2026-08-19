@@ -135,7 +135,7 @@
             </div>
         </header>
 
-        <div class="spa-status" wire:loading.flex wire:target="selectSection" role="status" aria-live="polite">
+        <div class="spa-status" wire:loading.flex wire:target="selectSection, selectTab" role="status" aria-live="polite">
             <div class="spa-status-card">
                 <img class="spa-status-logo" src="{{ asset('assets/images/logo_pide.png') }}" alt="Logo PIDE">
                 <h2 class="spa-status-title">Cargando sección</h2>
@@ -143,24 +143,37 @@
                 <div class="spa-status-progress" aria-hidden="true"><span></span></div>
             </div>
         </div>
-        <div wire:loading.remove wire:target="selectSection" class="page-content active" wire:key="section-{{ $activeSection }}">
-            @switch($activeSection)
-                @case('dni') <livewire:consulta-dni wire:key="consulta-dni" /> @break
-                @case('ruc') <livewire:consulta-ruc wire:key="consulta-ruc" /> @break
-                @case('ccoactiva') <livewire:consulta-coactiva wire:key="consulta-coactiva" /> @break
-                @case('cert-ambientales') <livewire:consulta-cambientales wire:key="consulta-cambientales" /> @break
-                @case('partidas') <livewire:consulta-partidas wire:key="consulta-partidas" /> @break
-                @case('papeletas') <livewire:consulta-papeletas wire:key="consulta-papeletas" /> @break
-                @case('mtc') <livewire:consulta-mtc wire:key="consulta-mtc" /> @break
-                @case('usuarios') <livewire:gestion-usuarios wire:key="gestion-usuarios" /> @break
-                @case('roles') <livewire:gestion-roles wire:key="gestion-roles" /> @break
-                @case('modulos') <livewire:gestion-modulos wire:key="gestion-modulos" /> @break
-                @case('password') @include('livewire.sections.password') @break
-                @case('ayuda') <livewire:ayuda wire:key="ayuda" /> @break
-                @case('inicio') @include('livewire.sections.inicio') @break
-                @default
-                    @include('livewire.sections.construccion')
-            @endswitch
+        <div wire:loading.remove wire:target="selectSection, selectTab" class="page-content active" wire:key="section-{{ $this->renderKey() }}">
+            @php($activeModule = $this->activeModule())
+
+            @if (! empty($activeModule['tabs']))
+                <div class="module-tabs" role="tablist" aria-label="{{ $activeModule['label'] ?? '' }}">
+                    @foreach ($activeModule['tabs'] as $tab)
+                        <button
+                            type="button"
+                            role="tab"
+                            wire:click="selectTab('{{ $tab['key'] }}')"
+                            class="module-tab {{ $this->activeTab === $tab['key'] ? 'active' : '' }}"
+                            aria-selected="{{ $this->activeTab === $tab['key'] ? 'true' : 'false' }}"
+                            @if ($this->activeTab === $tab['key']) aria-current="true" @endif
+                        >
+                            <x-icon :name="$tab['icon']" />
+                            <span>{{ $tab['label'] }}</span>
+                        </button>
+                    @endforeach
+                </div>
+            @endif
+
+            @php($renderKey = $this->renderKey())
+            @if ($renderKey === 'password')
+                @include('livewire.sections.password')
+            @elseif ($renderKey === 'inicio')
+                @include('livewire.sections.inicio')
+            @elseif ($component = $this->componentFor($renderKey))
+                <livewire:dynamic-component :component="$component" :key="$renderKey" />
+            @else
+                @include('livewire.sections.construccion')
+            @endif
         </div>
     </main>
 

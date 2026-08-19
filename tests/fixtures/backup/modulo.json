@@ -1,0 +1,30 @@
+[
+    {
+        "MOD_id": 1,
+        "MOD_sistema_id": 2,
+        "MOD_padre_id": null,
+        "MOD_codigo": "INI",
+        "MOD_nombre": "INICIO",
+        "MOD_descripcion": "Inicio del sistema",
+        "MOD_url": "/pide/inicio",
+        "MOD_icono": "fas fa-home",
+        "MOD_orden": 1,
+        "MOD_nivel": 1,
+        "MOD_es_menu": 1,
+        "MOD_activo": 1
+    },
+    {
+        "MOD_id": 2,
+        "MOD_sistema_id": 2,
+        "MOD_padre_id": null,
+        "MOD_codigo": "CON",
+        "MOD_nombre": "CONSULTAS",
+        "MOD_descripcion": "Consultas del sistema",
+        "MOD_url": "/pide/consultas",
+        "MOD_icono": "fa-solid fa-database",
+        "MOD_orden": 2,
+        "MOD_nivel": 1,
+        "MOD_es_menu": 1,
+        "MOD_activo": 1
+    }
+]

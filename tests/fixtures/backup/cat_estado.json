@@ -1,0 +1,16 @@
+[
+    {
+        "EST_id": 1,
+        "EST_codigo": "ACTIVO",
+        "EST_descripcion": "Activo",
+        "EST_aplicable_a": "GENERAL",
+        "EST_fecha_registro": "2025-11-26T14:17:38.1666667"
+    },
+    {
+        "EST_id": 2,
+        "EST_codigo": "INACTIVO",
+        "EST_descripcion": "Inactivo",
+        "EST_aplicable_a": "GENERAL",
+        "EST_fecha_registro": "2025-11-26T14:17:38.1666667"
+    }
+]

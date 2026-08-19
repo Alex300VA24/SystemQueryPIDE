@@ -4,10 +4,11 @@
             ['key'=>'dni','name'=>'RENIEC','tag'=>'Registro Nacional','description'=>'Registro Nacional de Identificación y Estado Civil','class'=>'reniec','icon'=>'id','badge'=>'shield','features'=>['Consulta por DNI','Datos personales','Estado del documento','Foto y firma digital']],
             ['key'=>'ruc','name'=>'SUNAT','tag'=>'Administración Tributaria','description'=>'Superintendencia Nacional de Aduanas y de Administración Tributaria','class'=>'sunat','icon'=>'document','badge'=>'calculator','features'=>['Consulta por RUC','Razón social','Estado del contribuyente','Domicilio fiscal']],
             ['key'=>'partidas','name'=>'SUNARP','tag'=>'Registros Públicos','description'=>'Superintendencia Nacional de los Registros Públicos','class'=>'sunarp','icon'=>'home','badge'=>'archive','features'=>['Consulta registral','Propiedades inmuebles','Vehículos registrados','Personas jurídicas']],
-            ['key'=>'ccoactiva','name'=>'Cobranza Coactiva','tag'=>'Administración Tributaria','description'=>'Deudas en cobranza coactiva administradas por SUNAT','class'=>'sunat','icon'=>'calculator','badge'=>'shield','features'=>['Consulta por DNI o RUC','Entidad de la deuda','Periodo tributario','Monto de la deuda']],
+            ['key'=>'ruc','tab'=>'ccoactiva','name'=>'Cobranza Coactiva','tag'=>'Administración Tributaria','description'=>'Deudas en cobranza coactiva administradas por SUNAT','class'=>'sunat','icon'=>'calculator','badge'=>'shield','features'=>['Consulta por DNI o RUC','Entidad de la deuda','Periodo tributario','Monto de la deuda']],
             ['key'=>'cert-ambientales','name'=>'Certificaciones Ambientales','tag'=>'Gestión Ambiental','description'=>'Registro Administrativo de Certificaciones Ambientales - SENACE','class'=>'senace','icon'=>'leaf','badge'=>'archive','features'=>['Consulta por expediente','Sector y actividad','Estado de evaluación','Enlaces al expediente digital']],
             ['key'=>'mtc','name'=>'MTC','tag'=>'Transportes y Comunicaciones','description'=>'Récord de conductor: licencias, papeletas y sanciones vigentes','class'=>'mtc','icon'=>'car','badge'=>'shield','features'=>['Consulta por DNI o CE','Última licencia emitida','Papeletas aplicadas','Sanciones vigentes']],
         ] as $service)
+            @if ($this->canReach($service['key']))
             <article class="service-card {{ $service['class'] }}-card">
                 <div class="service-card-body">
                     <div class="service-card-top">
@@ -29,11 +30,12 @@
                         @endforeach
                     </ul>
 
-                    <button type="button" wire:click="selectSection('{{ $service['key'] }}')" class="service-btn btn-{{ $service['class'] }}">
+                    <button type="button" wire:click="selectSection('{{ $service['key'] }}', '{{ $service['tab'] ?? '' }}')" class="service-btn btn-{{ $service['class'] }}">
                         <x-icon name="search" /> Consultar {{ $service['name'] }}
                     </button>
                 </div>
             </article>
+            @endif
         @endforeach
     </section>
 

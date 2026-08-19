@@ -43,8 +43,7 @@
                             <select id="nivelModulo" wire:model.live="nivel">
                                 <option value="1">Nivel 1 - Principal</option>
                                 <option value="2">Nivel 2 - Secundario</option>
-                                <option value="3">Nivel 3 - Terciario</option>
-                                <option value="4">Nivel 4 - Cuaternario</option>
+                                <option value="3">Nivel 3 - Terciario (pestañas del módulo padre)</option>
                             </select>
                             <small class="field-hint">Al cambiar el nivel se muestran los módulos existentes del grupo.</small>
                             @error('nivel')<span class="field-error" role="alert">{{ $message }}</span>@enderror

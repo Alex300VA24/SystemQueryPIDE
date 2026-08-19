@@ -203,6 +203,7 @@ final class Ayuda extends Component
                 ],
                 [
                     'Nivel 1 son opciones principales; el nivel 2 cuelga de una opción principal.',
+                    'Un módulo de nivel 3 se muestra como pestaña dentro de su módulo padre (por ejemplo, las consultas de SUNAT).',
                     'Los módulos desactivados desaparecen del menú de todos.',
                 ]
             ),

@@ -1,0 +1,14 @@
+[
+    {
+        "HIS_id": 0,
+        "HIS_tabla": "ROL",
+        "HIS_registro_id": 1,
+        "HIS_operacion": "INSERT",
+        "HIS_usuario_id": null,
+        "HIS_fecha": "2025-11-28T08:54:58.53",
+        "HIS_ip": null,
+        "HIS_datos_anteriores": null,
+        "HIS_datos_nuevos": null,
+        "HIS_observacion": "Rol creado"
+    }
+]

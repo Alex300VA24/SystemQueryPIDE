@@ -1,93 +1,261 @@
 [
     {
-        "ROM_id": 42,
+        "ROM_id": 32,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 1,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 24,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 2,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 28,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 4,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 23,
         "ROM_rol_id": 1,
         "ROM_sistema_id": 2,
         "ROM_modulo_id": 5,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5600000"
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 25,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 6,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 26,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 7,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 27,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 8,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 29,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 9,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 30,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 10,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 31,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 11,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 33,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 12,
+        "ROM_fecha_asignacion": "2025-12-08T13:56:40"
+    },
+    {
+        "ROM_id": 34,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 13,
+        "ROM_fecha_asignacion": "2026-02-18T15:02:08"
+    },
+    {
+        "ROM_id": 39,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 14,
+        "ROM_fecha_asignacion": "2026-08-14T12:00:00"
     },
     {
         "ROM_id": 43,
         "ROM_rol_id": 1,
         "ROM_sistema_id": 2,
-        "ROM_modulo_id": 2,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5600000"
+        "ROM_modulo_id": 15,
+        "ROM_fecha_asignacion": "2026-08-18T19:23:01"
     },
     {
         "ROM_id": 44,
         "ROM_rol_id": 1,
         "ROM_sistema_id": 2,
-        "ROM_modulo_id": 6,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
+        "ROM_modulo_id": 16,
+        "ROM_fecha_asignacion": "2026-08-18T19:41:02"
     },
     {
         "ROM_id": 45,
         "ROM_rol_id": 1,
         "ROM_sistema_id": 2,
-        "ROM_modulo_id": 7,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
+        "ROM_modulo_id": 17,
+        "ROM_fecha_asignacion": "2026-08-18T20:25:14"
+    },
+    {
+        "ROM_id": 46,
+        "ROM_rol_id": 1,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 18,
+        "ROM_fecha_asignacion": "2026-08-19T00:00:00"
+    },
+    {
+        "ROM_id": 15,
+        "ROM_rol_id": 2,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 1,
+        "ROM_fecha_asignacion": "2025-12-08T13:37:44"
+    },
+    {
+        "ROM_id": 12,
+        "ROM_rol_id": 2,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 2,
+        "ROM_fecha_asignacion": "2025-12-08T13:37:44"
+    },
+    {
+        "ROM_id": 14,
+        "ROM_rol_id": 2,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 4,
+        "ROM_fecha_asignacion": "2025-12-08T13:37:44"
+    },
+    {
+        "ROM_id": 11,
+        "ROM_rol_id": 2,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 6,
+        "ROM_fecha_asignacion": "2025-12-08T13:37:44"
+    },
+    {
+        "ROM_id": 13,
+        "ROM_rol_id": 2,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 9,
+        "ROM_fecha_asignacion": "2025-12-08T13:37:44"
+    },
+    {
+        "ROM_id": 40,
+        "ROM_rol_id": 2,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 14,
+        "ROM_fecha_asignacion": "2026-08-14T12:00:00"
     },
     {
         "ROM_id": 47,
-        "ROM_rol_id": 1,
+        "ROM_rol_id": 2,
         "ROM_sistema_id": 2,
-        "ROM_modulo_id": 8,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
+        "ROM_modulo_id": 18,
+        "ROM_fecha_asignacion": "2026-08-19T00:00:00"
+    },
+    {
+        "ROM_id": 22,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 1,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 17,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 2,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 21,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 4,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 16,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 5,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 18,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 6,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 19,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 7,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 20,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 9,
+        "ROM_fecha_asignacion": "2025-12-08T13:46:03"
+    },
+    {
+        "ROM_id": 41,
+        "ROM_rol_id": 3,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 14,
+        "ROM_fecha_asignacion": "2026-08-14T12:00:00"
     },
     {
         "ROM_id": 48,
-        "ROM_rol_id": 1,
+        "ROM_rol_id": 3,
         "ROM_sistema_id": 2,
-        "ROM_modulo_id": 4,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
+        "ROM_modulo_id": 18,
+        "ROM_fecha_asignacion": "2026-08-19T00:00:00"
     },
     {
-        "ROM_id": 49,
-        "ROM_rol_id": 1,
-        "ROM_sistema_id": 2,
-        "ROM_modulo_id": 9,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
-    },
-    {
-        "ROM_id": 50,
-        "ROM_rol_id": 1,
-        "ROM_sistema_id": 2,
-        "ROM_modulo_id": 10,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
-    },
-    {
-        "ROM_id": 51,
-        "ROM_rol_id": 1,
-        "ROM_sistema_id": 2,
-        "ROM_modulo_id": 11,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
-    },
-    {
-        "ROM_id": 52,
-        "ROM_rol_id": 1,
+        "ROM_id": 38,
+        "ROM_rol_id": 4,
         "ROM_sistema_id": 2,
         "ROM_modulo_id": 1,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
+        "ROM_fecha_asignacion": "2026-08-06T14:10:35"
     },
     {
-        "ROM_id": 53,
-        "ROM_rol_id": 1,
+        "ROM_id": 37,
+        "ROM_rol_id": 4,
         "ROM_sistema_id": 2,
-        "ROM_modulo_id": 12,
-        "ROM_fecha_asignacion": "2025-12-11T12:18:19.5630000"
+        "ROM_modulo_id": 2,
+        "ROM_fecha_asignacion": "2026-08-06T14:10:35"
     },
     {
-        "ROM_id": 124,
-        "ROM_rol_id": 1,
+        "ROM_id": 36,
+        "ROM_rol_id": 4,
+        "ROM_sistema_id": 2,
+        "ROM_modulo_id": 13,
+        "ROM_fecha_asignacion": "2026-08-06T14:10:35"
+    },
+    {
+        "ROM_id": 42,
+        "ROM_rol_id": 4,
         "ROM_sistema_id": 2,
         "ROM_modulo_id": 14,
-        "ROM_fecha_asignacion": "2026-01-20T03:08:05.0630000"
-    },
-    {
-        "ROM_id": 145,
-        "ROM_rol_id": 1,
-        "ROM_sistema_id": 2,
-        "ROM_modulo_id": 15,
-        "ROM_fecha_asignacion": "2026-01-24T16:00:22.4970000"
+        "ROM_fecha_asignacion": "2026-08-14T12:00:00"
     }
 ]

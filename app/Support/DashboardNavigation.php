@@ -46,7 +46,7 @@ final class DashboardNavigation
             ->where('activo', true)
             ->whereHas('roles', fn ($query) => $query->whereIn('roles.id', $roleIds))
             ->orderBy('orden')
-            ->get(['id', 'padre_id', 'codigo', 'nombre', 'url', 'icono', 'orden']);
+            ->get(['id', 'padre_id', 'codigo', 'nombre', 'url', 'icono', 'orden', 'nivel']);
 
         return $this->tree($modules);
     }
@@ -77,16 +77,31 @@ final class DashboardNavigation
 
     private function mapModule(Modulo $module, Collection $children): array
     {
+        $tabs = $children->get($module->id, collect())
+            ->sortBy('orden')
+            ->filter(fn (Modulo $child) => (int) $child->nivel >= 3)
+            ->map(fn (Modulo $child) => [
+                'key' => self::URL_KEYS[trim(basename((string) $child->url), '/')] ?? self::CODE_KEYS[$child->codigo] ?? trim(basename((string) $child->url), '/'),
+                'code' => $child->codigo,
+                'label' => $child->nombre,
+                'icon' => $child->icono ?: 'grid',
+            ])
+            ->values()
+            ->all();
+
         return [
             'key' => self::URL_KEYS[trim(basename((string) $module->url), '/')] ?? self::CODE_KEYS[$module->codigo] ?? trim(basename((string) $module->url), '/'),
             'code' => $module->codigo,
             'label' => $module->nombre,
             'icon' => $module->icono ?: 'grid',
+            'nivel' => (int) $module->nivel,
             'children' => $children->get($module->id, collect())
                 ->sortBy('orden')
+                ->filter(fn (Modulo $child) => (int) $child->nivel < 3)
                 ->map(fn (Modulo $child) => $this->mapModule($child, $children))
                 ->values()
                 ->all(),
+            'tabs' => $tabs,
         ];
     }
 }

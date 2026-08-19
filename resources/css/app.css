@@ -449,6 +449,13 @@
     .navigation-empty { margin:1rem; padding:1rem; color:rgba(255,255,255,.72); font-size:.85rem; text-align:center; }
     .page-content.active { display:block; animation:pide-page-in .4s ease; }
     .field label { display:flex; align-items:center; gap:.4rem; }
+
+    .module-tabs { display:flex; align-items:flex-end; gap:4px; margin:0 0 20px; padding:8px 8px 0; border-bottom:2px solid #dbe3ee; border-radius:16px 16px 0 0; background:rgba(255,255,255,.78); box-shadow:0 8px 20px rgba(15,23,42,.06); overflow-x:auto; scrollbar-width:thin; }
+    .module-tab { min-height:46px; display:inline-flex; align-items:center; gap:9px; padding:10px 18px; margin-bottom:-2px; border:0; border-bottom:3px solid transparent; border-radius:12px 12px 0 0; background:transparent; color:#64748b; font:inherit; font-size:.88rem; font-weight:650; letter-spacing:.01em; white-space:nowrap; cursor:pointer; transition:color .2s ease,background-color .2s ease,border-color .2s ease; }
+    .module-tab:hover { color:#1f2937; background:rgba(30,64,175,.07); }
+    .module-tab.active { color:#1e40af; border-bottom-color:#1e40af; background:rgba(30,64,175,.09); font-weight:750; }
+    .module-tab .ui-icon { font-size:.95rem; }
+    .module-tab:focus-visible { outline:3px solid var(--focus); outline-offset:2px; }
 }
 
 @keyframes pide-home-in { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
@@ -456,6 +463,8 @@
 
 @media (max-width:768px) {
     .services-grid { gap:18px; }
+    .module-tabs { margin:0 0 16px; padding:6px 6px 0; gap:2px; }
+    .module-tab { min-height:44px; padding:9px 14px; font-size:.82rem; }
 }
 
 /* Consultas PIDE: migración fiel de RENIEC, SUNAT y SUNARP legacy. */

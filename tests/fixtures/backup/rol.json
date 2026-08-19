@@ -1,0 +1,18 @@
+[
+    {
+        "ROL_id": 1,
+        "ROL_codigo": "ADMIN",
+        "ROL_nombre": "ADMINISTRADOR",
+        "ROL_descripcion": "Acceso total al sistema",
+        "ROL_nivel": 10,
+        "ROL_activo": 1
+    },
+    {
+        "ROL_id": 2,
+        "ROL_codigo": "PRAC",
+        "ROL_nombre": "PRACTICANTE",
+        "ROL_descripcion": "Rol de practicante",
+        "ROL_nivel": 3,
+        "ROL_activo": 1
+    }
+]

@@ -2,9 +2,33 @@
     {
         "ROL_id": 1,
         "ROL_codigo": "ADMIN",
-        "ROL_nombre": "ADMINISTRADOR",
+        "ROL_nombre": "Administrador",
         "ROL_descripcion": "Acceso total al sistema",
         "ROL_nivel": 10,
+        "ROL_activo": 1
+    },
+    {
+        "ROL_id": 2,
+        "ROL_codigo": "PRAC",
+        "ROL_nombre": "PRACTICANTE",
+        "ROL_descripcion": "ESTE ES UN ROL PARA PRACTICANTE",
+        "ROL_nivel": 3,
+        "ROL_activo": 1
+    },
+    {
+        "ROL_id": 3,
+        "ROL_codigo": "EMP",
+        "ROL_nombre": "EMPLEADO",
+        "ROL_descripcion": "ESTE ES UN ROL PARA UN EMPLEADO",
+        "ROL_nivel": 5,
+        "ROL_activo": 1
+    },
+    {
+        "ROL_id": 4,
+        "ROL_codigo": "VIS",
+        "ROL_nivel": 1,
+        "ROL_nombre": "VISITANTE",
+        "ROL_descripcion": null,
         "ROL_activo": 1
     }
 ]

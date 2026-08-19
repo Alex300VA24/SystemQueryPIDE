@@ -28,7 +28,7 @@ class ModuloRequest extends FormRequest
             'icono' => ['required', 'string', 'max:100', 'exists:iconos,clase'],
             'parentId' => ['nullable', Rule::requiredIf((int) $nivel > 1), 'integer', 'exists:modulos,id', Rule::notIn(array_filter([$moduloId]))],
             'orden' => ['required', 'integer', 'min:1'],
-            'nivel' => ['required', 'integer', 'between:1,4'],
+            'nivel' => ['required', 'integer', 'between:1,3'],
             'activo' => ['boolean'],
         ];
     }

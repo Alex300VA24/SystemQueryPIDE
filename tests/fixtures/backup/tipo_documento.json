@@ -1,0 +1,22 @@
+[
+    {
+        "TDO_id": 1,
+        "TDO_codigo": "DNI",
+        "TDO_nombre": "Documento Nacional de Identidad",
+        "TDO_abreviatura": "DNI",
+        "TDO_formato_validacion": null,
+        "TDO_longitud_min": 8,
+        "TDO_longitud_max": 8,
+        "TDO_activo": 1
+    },
+    {
+        "TDO_id": 2,
+        "TDO_codigo": "RUC",
+        "TDO_nombre": "Registro Unico de Contribuyentes",
+        "TDO_abreviatura": "RUC",
+        "TDO_formato_validacion": null,
+        "TDO_longitud_min": 11,
+        "TDO_longitud_max": 11,
+        "TDO_activo": 1
+    }
+]

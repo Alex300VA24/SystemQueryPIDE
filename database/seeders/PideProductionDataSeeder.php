@@ -7,14 +7,16 @@ use Illuminate\Support\Facades\DB;
 
 class PideProductionDataSeeder extends Seeder
 {
+    public ?string $dataDir = null;
+
     public function run(): void
     {
-        $dir = database_path('seeders/data');
+        $dir = $this->dataDir ?? database_path('seeders/data');
 
         $catEstado = $this->load("$dir/cat_estado.json");
         $tipoDocumento = $this->load("$dir/tipo_documento.json");
         $sistemas = $this->load("$dir/sistema.json");
-        $iconos = $this->load("$dir/icono.json");
+        $iconos = $this->loadOptional("$dir/icono.json");
         $personas = $this->load("$dir/persona.json");
         $roles = $this->load("$dir/rol.json");
         $usuarios = $this->load("$dir/usuario.json");
@@ -175,8 +177,17 @@ class PideProductionDataSeeder extends Seeder
         return json_decode(file_get_contents($path), true);
     }
 
+    private function loadOptional(string $path): array
+    {
+        return is_file($path) ? $this->load($path) : [];
+    }
+
     private function insertWithId(string $table, array $rows): void
     {
+        if ($rows === []) {
+            return;
+        }
+
         $sqlsrv = DB::connection()->getDriverName() === 'sqlsrv';
 
         if ($sqlsrv) {
