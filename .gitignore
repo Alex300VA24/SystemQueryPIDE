@@ -72,6 +72,13 @@ auth.json
 /database/*.sqlite3
 /database/sqlite
 
+# Datos privados importados desde sistema legado
+/database/seeders/data/backup.sql
+/database/seeders/data/private/
+/database/seeders/data/env/
+/database/seeders/data/__pycache__/
+/database/seeders/data/*.private.json
+
 # ---------- ARCHIVOS TEMPORALES Y CACHÉ PHP ----------
 *.cache
 *.tmp
@@ -199,4 +206,3 @@ Vagrantfile
 DESIGN.md
 MANUAL_LIVEWIRE.md
 PRODUCT.md
-
