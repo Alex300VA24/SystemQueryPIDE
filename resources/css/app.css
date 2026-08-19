@@ -519,6 +519,29 @@
     .consulta-table th,.consulta-table td { padding:10px 12px; border-bottom:1px solid #e5e7eb; text-align:left; white-space:nowrap; }
     .consulta-table th { color:#374151; font-weight:700; background:rgba(255,255,255,.65); }
     .consulta-table tbody tr:hover { background:rgba(255,255,255,.5); }
+    .coactiva-detail-card { width:100%; }
+    .coactiva-detail-header { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; margin-bottom:20px; }
+    .consulta-info-card .coactiva-detail-header h2 { display:flex; align-items:center; gap:9px; margin:0 0 4px; color:#1f2937; font-size:18px; font-weight:700; }
+    .coactiva-detail-header h2 .ui-icon { color:var(--source); }
+    .coactiva-detail-header p { margin:0; color:#64748b; font-size:13px; }
+    .coactiva-counter { flex:0 0 auto; padding:6px 11px; border-radius:999px; background:#ccfbf1; color:#115e59; font-size:12px; font-weight:800; }
+    .coactiva-debt-nav { display:grid; grid-template-columns:44px minmax(0,1fr) 44px; align-items:stretch; gap:10px; margin-bottom:20px; padding:12px; border:1px solid #ccfbf1; border-radius:14px; background:#f0fdfa; }
+    .coactiva-nav-arrow { min-width:44px; min-height:44px; display:grid; place-items:center; border:1px solid #99f6e4; border-radius:10px; background:#fff; color:#0f766e; cursor:pointer; transition:background-color .18s ease,color .18s ease,transform .18s ease; }
+    .coactiva-nav-arrow:not(:disabled):hover { background:#0f766e; color:#fff; transform:translateY(-1px); }
+    .coactiva-nav-arrow:disabled { opacity:.4; cursor:not-allowed; }
+    .coactiva-debt-pages { min-width:0; display:flex; gap:8px; overflow-x:auto; padding:1px 2px 5px; scrollbar-width:thin; }
+    .coactiva-debt-page { min-width:88px; min-height:44px; display:flex; align-items:center; gap:8px; padding:7px 11px; border:1px solid #99f6e4; border-radius:10px; background:#fff; color:#475569; font:inherit; text-align:left; cursor:pointer; transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease; }
+    .coactiva-debt-page>span { width:28px; height:28px; display:grid; flex:0 0 auto; place-items:center; border-radius:8px; background:#ccfbf1; color:#115e59; font-size:12px; font-weight:850; }
+    .coactiva-debt-page>small { overflow:hidden; font-size:11px; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+    .coactiva-debt-page:hover { border-color:#14b8a6; }
+    .coactiva-debt-page.active { border-color:#0f766e; background:#0f766e; color:#fff; box-shadow:0 5px 12px rgba(15,118,110,.2); }
+    .coactiva-debt-page.active>span { background:#fff; color:#0f766e; }
+    .coactiva-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .coactiva-field-wide { grid-column:span 2; }
+    .coactiva-money-input { position:relative; }
+    .coactiva-money-input>span { position:absolute; z-index:1; top:50%; left:15px; color:#0f766e; font-size:14px; font-weight:800; transform:translateY(-50%); }
+    .consulta-legacy .coactiva-money-input>input { padding-left:42px; font-weight:750; }
+    .coactiva-fields input::placeholder { color:#94a3b8; opacity:1; }
     .consulta-info-links { display:flex; flex-wrap:wrap; gap:12px; margin-top:18px; padding-top:16px; border-top:1px solid #e5e7eb; }
     .sunat-grid .consulta-info-item.featured { grid-column:1/-1; border-width:2px; }
     .sunat-grid .consulta-info-item.featured.ruc { border-color:#fecaca; background:linear-gradient(135deg,#fef2f2,#fee2e2); }
@@ -696,6 +719,11 @@
     .sunarp-juridica-mode { grid-template-columns:1fr; }
     .sunarp-partidas-grid { grid-template-columns:1fr; }
     .sunarp-partida-card { min-height:118px; }
+    .coactiva-detail-header { flex-direction:column; gap:10px; }
+    .coactiva-fields { grid-template-columns:1fr; }
+    .coactiva-field-wide { grid-column:auto; }
+    .coactiva-debt-nav { grid-template-columns:44px minmax(0,1fr) 44px; gap:7px; padding:9px; }
+    .coactiva-debt-page { min-width:76px; }
 }
 
 @media (prefers-reduced-motion:reduce) {

@@ -28,6 +28,8 @@ class ConsultaCoactiva extends Component
 
     public array $deudas = [];
 
+    public int $deudaActual = 0;
+
     public function buscar(): void
     {
         $this->validate(
@@ -46,6 +48,7 @@ class ConsultaCoactiva extends Component
         $this->errorMessage = null;
         $this->successMessage = null;
         $this->deudas = [];
+        $this->deudaActual = 0;
         $this->real = false;
 
         try {
@@ -68,6 +71,7 @@ class ConsultaCoactiva extends Component
 
         $this->real = true;
         $this->deudas = $resultado['data'];
+        $this->deudaActual = 0;
         $this->successMessage = empty($this->deudas)
             ? 'No se encontraron deudas en cobranza coactiva.'
             : 'Consulta realizada exitosamente.';
@@ -76,8 +80,28 @@ class ConsultaCoactiva extends Component
 
     public function resetSearch(): void
     {
-        $this->reset('numeroDocumento', 'searched', 'real', 'deudas', 'errorMessage', 'successMessage');
+        $this->reset('numeroDocumento', 'searched', 'real', 'deudas', 'deudaActual', 'errorMessage', 'successMessage');
         $this->resetValidation();
+    }
+
+    public function seleccionarDeuda(int $indice): void
+    {
+        if (!array_key_exists($indice, $this->deudas)) {
+            return;
+        }
+
+        $this->deudaActual = $indice;
+    }
+
+    public function deudaAnterior(): void
+    {
+        $this->deudaActual = max(0, $this->deudaActual - 1);
+    }
+
+    public function deudaSiguiente(): void
+    {
+        $ultimoIndice = max(0, count($this->deudas) - 1);
+        $this->deudaActual = min($ultimoIndice, $this->deudaActual + 1);
     }
 
     public function render()

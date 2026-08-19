@@ -56,39 +56,102 @@
         </div>
     @endif
 
-    @if($searched && $real && !empty($deudas))
-        <section class="consulta-legacy-results" aria-live="polite">
-            <article class="glass consulta-info-card" style="width: 100%;">
-                <h2><x-icon name="calculator" /> Deudas en Cobranza Coactiva</h2>
-                <div style="overflow-x: auto;">
-                    <table class="consulta-table">
-                        <thead>
-                            <tr>
-                                <th>Contribuyente</th>
-                                <th>RUC</th>
-                                <th>Entidad</th>
-                                <th>Periodo</th>
-                                <th>Monto Deuda</th>
-                                <th>Fecha Transferencia</th>
-                                <th>Fecha Actualización</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($deudas as $deuda)
-                                <tr>
-                                    <td>{{ $deuda['nomRuc'] ?: '-' }}</td>
-                                    <td>{{ $deuda['numRuc'] ?: '-' }}</td>
-                                    <td>{{ $deuda['desEntidad'] ?: '-' }}</td>
-                                    <td>{{ $deuda['perDoc'] ?: '-' }}</td>
-                                    <td>{{ number_format((float) $deuda['mtoDeuda'], 2) }}</td>
-                                    <td>{{ $deuda['fecTraCoa'] ?: '-' }}</td>
-                                    <td>{{ $deuda['fecAct'] ?: '-' }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+    @php
+        $totalDeudas = count($deudas);
+        $deuda = $deudas[$deudaActual] ?? [];
+    @endphp
+
+    <section class="consulta-legacy-results" aria-live="polite" aria-busy="{{ $searched && !$real ? 'true' : 'false' }}">
+        <article class="glass consulta-info-card coactiva-detail-card">
+            <header class="coactiva-detail-header">
+                <div>
+                    <h2><x-icon name="calculator" /> Detalle de deuda coactiva</h2>
+                    <p>Los datos obtenidos se muestran en campos de solo lectura.</p>
                 </div>
-            </article>
-        </section>
-    @endif
+                <span class="coactiva-counter">
+                    {{ $totalDeudas > 0 ? 'Deuda '.($deudaActual + 1).' de '.$totalDeudas : 'Sin deuda seleccionada' }}
+                </span>
+            </header>
+
+            @if($totalDeudas > 1)
+                <nav class="coactiva-debt-nav" aria-label="Navegar entre deudas encontradas">
+                    <button
+                        type="button"
+                        class="coactiva-nav-arrow"
+                        wire:click="deudaAnterior"
+                        @disabled($deudaActual === 0)
+                        aria-label="Ver deuda anterior"
+                    >
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+
+                    <div class="coactiva-debt-pages" aria-label="{{ $totalDeudas }} deudas encontradas">
+                        @foreach($deudas as $indice => $item)
+                            <button
+                                type="button"
+                                wire:key="deuda-nav-{{ $indice }}"
+                                wire:click="seleccionarDeuda({{ $indice }})"
+                                class="coactiva-debt-page {{ $deudaActual === $indice ? 'active' : '' }}"
+                                aria-label="Ver deuda {{ $indice + 1 }} de {{ $totalDeudas }}"
+                                @if($deudaActual === $indice) aria-current="true" @endif
+                            >
+                                <span>{{ $indice + 1 }}</span>
+                                <small>{{ $item['perDoc'] ?: 'Sin periodo' }}</small>
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <button
+                        type="button"
+                        class="coactiva-nav-arrow"
+                        wire:click="deudaSiguiente"
+                        @disabled($deudaActual === $totalDeudas - 1)
+                        aria-label="Ver deuda siguiente"
+                    >
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </nav>
+            @endif
+
+            <div class="coactiva-fields">
+                <div class="field coactiva-field-wide">
+                    <label for="coactiva-contribuyente"><x-icon name="user" /> Contribuyente</label>
+                    <input id="coactiva-contribuyente" type="text" readonly value="{{ $deuda['nomRuc'] ?? '' }}" placeholder="Se completará al consultar">
+                </div>
+
+                <div class="field">
+                    <label for="coactiva-ruc"><x-icon name="id" /> RUC</label>
+                    <input id="coactiva-ruc" type="text" readonly value="{{ $deuda['numRuc'] ?? '' }}" placeholder="Se completará al consultar">
+                </div>
+
+                <div class="field coactiva-field-wide">
+                    <label for="coactiva-entidad"><x-icon name="building" /> Entidad</label>
+                    <input id="coactiva-entidad" type="text" readonly value="{{ $deuda['desEntidad'] ?? '' }}" placeholder="Se completará al consultar">
+                </div>
+
+                <div class="field">
+                    <label for="coactiva-periodo"><x-icon name="calendar" /> Periodo</label>
+                    <input id="coactiva-periodo" type="text" readonly value="{{ $deuda['perDoc'] ?? '' }}" placeholder="Se completará al consultar">
+                </div>
+
+                <div class="field">
+                    <label for="coactiva-monto"><x-icon name="calculator" /> Monto de deuda</label>
+                    <div class="coactiva-money-input">
+                        <span aria-hidden="true">S/</span>
+                        <input id="coactiva-monto" type="text" readonly value="{{ $totalDeudas > 0 ? number_format((float) ($deuda['mtoDeuda'] ?? 0), 2) : '' }}" placeholder="0.00">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="coactiva-transferencia"><x-icon name="calendar" /> Fecha de transferencia</label>
+                    <input id="coactiva-transferencia" type="text" readonly value="{{ $deuda['fecTraCoa'] ?? '' }}" placeholder="Se completará al consultar">
+                </div>
+
+                <div class="field">
+                    <label for="coactiva-actualizacion"><x-icon name="clock" /> Fecha de actualización</label>
+                    <input id="coactiva-actualizacion" type="text" readonly value="{{ $deuda['fecAct'] ?? '' }}" placeholder="Se completará al consultar">
+                </div>
+            </div>
+        </article>
+    </section>
 </div>
