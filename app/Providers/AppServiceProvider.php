@@ -6,6 +6,10 @@ use App\Contracts\RoleManagementService;
 use App\Contracts\UserManagementService;
 use App\Services\EloquentRoleManagementService;
 use App\Services\EloquentUserManagementService;
+use App\Services\Pide\CAmbientalesService;
+use App\Services\Pide\CCoactivaService;
+use App\Services\Pide\Contracts\CAmbientalesServiceInterface;
+use App\Services\Pide\Contracts\CCoactivaServiceInterface;
 use App\Services\Pide\Contracts\PideHttpClientInterface;
 use App\Services\Pide\Contracts\ReniecServiceInterface;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
@@ -31,6 +35,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ReniecServiceInterface::class, ReniecService::class);
         $this->app->bind(SunatServiceInterface::class, SunatService::class);
         $this->app->bind(SunarpServiceInterface::class, SunarpService::class);
+        $this->app->bind(CCoactivaServiceInterface::class, CCoactivaService::class);
+        $this->app->bind(CAmbientalesServiceInterface::class, CAmbientalesService::class);
     }
 
     /**

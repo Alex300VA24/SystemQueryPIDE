@@ -33,6 +33,7 @@
         'grid' => 'fa-solid fa-table-cells-large',
         'question' => 'fa-solid fa-circle-question',
         'book' => 'fa-solid fa-book-open',
+        'leaf' => 'fa-solid fa-leaf',
     ];
     $iconClass = str_contains((string) $name, 'fa-') ? (string) $name : ($icons[$name] ?? $icons['grid']);
 @endphp

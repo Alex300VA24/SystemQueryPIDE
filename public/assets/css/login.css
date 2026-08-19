@@ -12,6 +12,7 @@
     --reniec-color: #059669;
     --sunat-color: #dc2626;
     --sunarp-color: #7c3aed;
+    --senace-color: #166534;
 }
 
 body {
@@ -185,6 +186,10 @@ body::before {
     border-left: 4px solid var(--sunarp-color);
 }
 
+.entity-card.senace {
+    border-left: 4px solid var(--senace-color);
+}
+
 .entity-icon {
     width: 48px;
     height: 48px;
@@ -212,6 +217,12 @@ body::before {
     background: linear-gradient(135deg, var(--sunarp-color), #a78bfa);
     color: white;
     box-shadow: 0 4px 12px rgba(124, 58, 237, 0.35);
+}
+
+.entity-card.senace .entity-icon {
+    background: linear-gradient(135deg, var(--senace-color), #4ade80);
+    color: white;
+    box-shadow: 0 4px 12px rgba(22, 101, 52, 0.35);
 }
 
 .entity-info {

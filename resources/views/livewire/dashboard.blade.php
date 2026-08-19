@@ -147,6 +147,8 @@
             @switch($activeSection)
                 @case('dni') <livewire:consulta-dni wire:key="consulta-dni" /> @break
                 @case('ruc') <livewire:consulta-ruc wire:key="consulta-ruc" /> @break
+                @case('ccoactiva') <livewire:consulta-coactiva wire:key="consulta-coactiva" /> @break
+                @case('cert-ambientales') <livewire:consulta-cambientales wire:key="consulta-cambientales" /> @break
                 @case('partidas') <livewire:consulta-partidas wire:key="consulta-partidas" /> @break
                 @case('papeletas') <livewire:consulta-papeletas wire:key="consulta-papeletas" /> @break
                 @case('usuarios') <livewire:gestion-usuarios wire:key="gestion-usuarios" /> @break

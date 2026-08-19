@@ -64,6 +64,10 @@ new #[Layout('layouts.guest')] class extends Component
                 <div class="entity-icon" aria-hidden="true"><i class="fas fa-book"></i></div>
                 <div class="entity-info"><h2>SUNARP</h2><p>Superintendencia de Registros Públicos</p></div>
             </article>
+            <article class="entity-card senace">
+                <div class="entity-icon" aria-hidden="true"><i class="fas fa-leaf"></i></div>
+                <div class="entity-info"><h2>SENACE</h2><p>Servicio Nacional de Certificaciones Ambientales</p></div>
+            </article>
         </div>
     </section>
 
