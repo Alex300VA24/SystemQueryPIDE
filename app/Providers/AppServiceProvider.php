@@ -10,10 +10,12 @@ use App\Services\Pide\CAmbientalesService;
 use App\Services\Pide\CCoactivaService;
 use App\Services\Pide\Contracts\CAmbientalesServiceInterface;
 use App\Services\Pide\Contracts\CCoactivaServiceInterface;
+use App\Services\Pide\Contracts\MtcServiceInterface;
 use App\Services\Pide\Contracts\PideHttpClientInterface;
 use App\Services\Pide\Contracts\ReniecServiceInterface;
 use App\Services\Pide\Contracts\SunarpServiceInterface;
 use App\Services\Pide\Contracts\SunatServiceInterface;
+use App\Services\Pide\MtcService;
 use App\Services\Pide\PideHttpClient;
 use App\Services\Pide\ReniecService;
 use App\Services\Pide\SunarpService;
@@ -37,6 +39,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SunarpServiceInterface::class, SunarpService::class);
         $this->app->bind(CCoactivaServiceInterface::class, CCoactivaService::class);
         $this->app->bind(CAmbientalesServiceInterface::class, CAmbientalesService::class);
+        $this->app->bind(MtcServiceInterface::class, MtcService::class);
     }
 
     /**
@@ -61,7 +64,7 @@ class AppServiceProvider extends ServiceProvider
 
             if (is_string($content) && str_contains($content, 'data-update-uri="/')) {
                 $response->setContent(
-                    str_replace('data-update-uri="/', 'data-update-uri="' . $base . '/', $content)
+                    str_replace('data-update-uri="/', 'data-update-uri="'.$base.'/', $content)
                 );
             }
         }, -100);

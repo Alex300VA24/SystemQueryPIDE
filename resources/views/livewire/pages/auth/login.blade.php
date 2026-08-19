@@ -68,6 +68,10 @@ new #[Layout('layouts.guest')] class extends Component
                 <div class="entity-icon" aria-hidden="true"><i class="fas fa-leaf"></i></div>
                 <div class="entity-info"><h2>SENACE</h2><p>Servicio Nacional de Certificaciones Ambientales</p></div>
             </article>
+            <article class="entity-card mtc">
+                <div class="entity-icon" aria-hidden="true"><i class="fas fa-road"></i></div>
+                <div class="entity-info"><h2>MTC</h2><p>Ministerio de Transportes y Comunicaciones</p></div>
+            </article>
         </div>
     </section>
 

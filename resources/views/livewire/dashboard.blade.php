@@ -151,6 +151,7 @@
                 @case('cert-ambientales') <livewire:consulta-cambientales wire:key="consulta-cambientales" /> @break
                 @case('partidas') <livewire:consulta-partidas wire:key="consulta-partidas" /> @break
                 @case('papeletas') <livewire:consulta-papeletas wire:key="consulta-papeletas" /> @break
+                @case('mtc') <livewire:consulta-mtc wire:key="consulta-mtc" /> @break
                 @case('usuarios') <livewire:gestion-usuarios wire:key="gestion-usuarios" /> @break
                 @case('roles') <livewire:gestion-roles wire:key="gestion-roles" /> @break
                 @case('modulos') <livewire:gestion-modulos wire:key="gestion-modulos" /> @break

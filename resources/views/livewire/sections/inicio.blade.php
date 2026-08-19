@@ -6,6 +6,7 @@
             ['key'=>'partidas','name'=>'SUNARP','tag'=>'Registros Públicos','description'=>'Superintendencia Nacional de los Registros Públicos','class'=>'sunarp','icon'=>'home','badge'=>'archive','features'=>['Consulta registral','Propiedades inmuebles','Vehículos registrados','Personas jurídicas']],
             ['key'=>'ccoactiva','name'=>'Cobranza Coactiva','tag'=>'Administración Tributaria','description'=>'Deudas en cobranza coactiva administradas por SUNAT','class'=>'sunat','icon'=>'calculator','badge'=>'shield','features'=>['Consulta por DNI o RUC','Entidad de la deuda','Periodo tributario','Monto de la deuda']],
             ['key'=>'cert-ambientales','name'=>'Certificaciones Ambientales','tag'=>'Gestión Ambiental','description'=>'Registro Administrativo de Certificaciones Ambientales - SENACE','class'=>'senace','icon'=>'leaf','badge'=>'archive','features'=>['Consulta por expediente','Sector y actividad','Estado de evaluación','Enlaces al expediente digital']],
+            ['key'=>'mtc','name'=>'MTC','tag'=>'Transportes y Comunicaciones','description'=>'Récord de conductor: licencias, papeletas y sanciones vigentes','class'=>'mtc','icon'=>'car','badge'=>'shield','features'=>['Consulta por DNI o CE','Última licencia emitida','Papeletas aplicadas','Sanciones vigentes']],
         ] as $service)
             <article class="service-card {{ $service['class'] }}-card">
                 <div class="service-card-body">

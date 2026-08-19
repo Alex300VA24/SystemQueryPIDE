@@ -9,7 +9,7 @@ export default {
         './resources/views/**/*.blade.php',
     ],
 
-    safelist: ['btn-reniec', 'btn-sunat', 'btn-sunarp', 'chip-general', 'chip-reniec', 'chip-sunat', 'chip-sunarp', 'chip-admin'],
+    safelist: ['btn-reniec', 'btn-sunat', 'btn-sunarp', 'btn-senace', 'btn-mtc', 'chip-general', 'chip-reniec', 'chip-sunat', 'chip-sunarp', 'chip-admin'],
 
     theme: {
         extend: {

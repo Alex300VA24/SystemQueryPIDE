@@ -7,6 +7,7 @@ return [
     'url_sunarp' => env('PIDE_URL_SUNARP'),
     'url_ccoactiva' => env('PIDE_URL_CCOACTIVA'),
     'url_cambientales' => env('PIDE_URL_CAMBIENTALES'),
+    'url_mtc' => env('PIDE_URL_MTC', 'https://ws3.pide.gob.pe/Rest/Mtc'),
     'goficina' => env('PIDE_GOFICINA'),
     'sunarp_usuario' => env('PIDE_SUNARP_USUARIO'),
     'sunarp_pass' => env('PIDE_SUNARP_PASS'),
